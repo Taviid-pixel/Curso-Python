@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Módulo 08 — Manejo de Datos · TAVIID</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#050e1a;--navy2:#0a1a2e;--navy3:#0f2444;--blue:#1a73e8;--blue-light:#4a9eff;--cyan:#00c9b8;--amber:#f4a900;--green:#00c17a;--red:#e03030;--white:#f0f6ff;--muted:#7a9ab8;--border:rgba(255,255,255,0.07);--code-bg:#0a1220;
+--api:#0ea5e9;--excel:#16a34a;--json:#f59e0b;--sqlite:#8b5cf6}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+.topbar{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.taviid-brand{display:flex;align-items:center;gap:10px}
+.taviid-pill{background:#cc0000;color:#fff;font-size:13px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}
+.taviid-ing{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
+.dev-label{font-size:12px;color:var(--muted)}
+.dev-label span{color:var(--amber);font-weight:700}
+
+.mod-banner{background:linear-gradient(135deg,#0369a1 0%,var(--navy3) 60%);padding:32px 40px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.mod-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.mod-banner::after{content:'';position:absolute;right:80px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.mod-number{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:rgba(255,255,255,0.12);line-height:1;letter-spacing:-4px;user-select:none}
+.mod-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.mod-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.mod-dot{display:inline-block;width:6px;height:6px;background:var(--api);border-radius:50%;margin-right:8px;vertical-align:middle}
+
+.hero{padding:48px 40px 32px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(3,105,161,0.15) 0%,transparent 70%)}
+.hero-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1.1;margin-bottom:12px}
+.hero-title .ap{color:#38bdf8}
+.hero-title .cy{color:var(--cyan)}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:500;max-width:560px;margin:0 auto 24px}
+
+/* MÓDULOS NAV */
+.modules-nav{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
+.mod-pill{display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:2px;border:1px solid;font-size:12px;font-weight:700;cursor:default}
+.mp-api{background:rgba(14,165,233,0.1);color:#38bdf8;border-color:rgba(56,189,248,0.3)}
+.mp-excel{background:rgba(22,163,74,0.1);color:#4ade80;border-color:rgba(74,222,128,0.3)}
+.mp-json{background:rgba(245,158,11,0.1);color:#fbbf24;border-color:rgba(251,191,36,0.3)}
+.mp-num{font-family:'JetBrains Mono',monospace;font-size:10px;opacity:.6}
+
+.page{padding:0 40px 60px}
+
+/* SEPARADORES DE TEMA */
+.tema-header{display:flex;align-items:center;gap:0;margin:48px 0 24px}
+.tema-badge{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;padding:10px 22px;letter-spacing:1px;text-transform:uppercase}
+.tb-api{background:var(--api);color:#fff}
+.tb-excel{background:var(--excel);color:#fff}
+.tb-json{background:var(--json);color:#fff}
+.tema-line{flex:1;height:2px}
+.tl-api{background:linear-gradient(90deg,var(--api),transparent)}
+.tl-excel{background:linear-gradient(90deg,var(--excel),transparent)}
+.tl-json{background:linear-gradient(90deg,var(--json),transparent)}
+
+.sec-header{display:flex;align-items:center;gap:12px;margin:28px 0 16px}
+.sec-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;padding:4px 10px;border-radius:2px;text-transform:uppercase}
+.sn-api{color:#38bdf8;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2)}
+.sn-excel{color:#4ade80;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2)}
+.sn-json{color:#fbbf24;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2)}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+.card{background:var(--navy2);border:1px solid var(--border);border-top:2px solid transparent;padding:20px;border-radius:2px;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card.ca{border-top-color:var(--api)}
+.card.ce{border-top-color:var(--excel)}
+.card.cj{border-top-color:var(--json)}
+.card.cb{border-top-color:var(--blue-light)}
+.card.cc{border-top-color:var(--cyan)}
+.card.cr{border-top-color:var(--red)}
+.card.cg{border-top-color:var(--green)}
+.card.cam{border-top-color:var(--amber)}
+
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:700;padding:3px 9px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.ta{background:rgba(14,165,233,0.15);color:#38bdf8;border:1px solid rgba(56,189,248,0.3)}
+.te{background:rgba(22,163,74,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3)}
+.tj{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}
+.tb{background:rgba(74,158,255,0.15);color:var(--blue-light);border:1px solid rgba(74,158,255,0.3)}
+.tc{background:rgba(0,201,184,0.15);color:var(--cyan);border:1px solid rgba(0,201,184,0.3)}
+.tr{background:rgba(224,48,48,0.15);color:#ff6b6b;border:1px solid rgba(224,48,48,0.3)}
+.tg{background:rgba(0,193,122,0.15);color:var(--green);border:1px solid rgba(0,193,122,0.3)}
+.tam{background:rgba(244,169,0,0.15);color:var(--amber);border:1px solid rgba(244,169,0,0.3)}
+
+.card-title{font-size:14px;font-weight:700;color:var(--white)}
+.card-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.card-desc strong{color:var(--white);font-weight:600}
+
+.code{background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);border-left:3px solid var(--api);padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;border-radius:0 2px 2px 0;overflow-x:auto}
+.code.le{border-left-color:var(--excel)}
+.code.lj{border-left-color:var(--json)}
+.code.lb{border-left-color:var(--blue-light)}
+.code.lc{border-left-color:var(--cyan)}
+.code.lr{border-left-color:var(--red)}
+.code.lg{border-left-color:var(--green)}
+.code.lam{border-left-color:var(--amber)}
+.kw{color:#ff79c6}.s{color:#f1fa8c}.n{color:#bd93f9}.c{color:#3d5a73;font-style:italic}.v{color:#8be9fd}.f{color:#50fa7b}.p{color:#f8f8f2}
+
+/* JSON VISUAL */
+.json-block{background:#0d1117;border:1px solid rgba(251,191,36,0.2);border-left:3px solid var(--json);padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;border-radius:0 2px 2px 0;overflow-x:auto}
+.jk{color:#79c0ff}.jv-s{color:#a5d6ff}.jv-n{color:#f2cc60}.jv-b{color:#ff7b72}.jp{color:#e6edf3}
+
+/* HTTP FLOW */
+.flow-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:2px;margin-bottom:8px}
+.flow-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;padding:3px 10px;border-radius:2px;flex-shrink:0}
+.fb-get{background:rgba(14,165,233,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.3)}
+.fb-200{background:rgba(0,193,122,0.2);color:var(--green);border:1px solid rgba(0,193,122,0.3)}
+.fb-err{background:rgba(224,48,48,0.2);color:#ff6b6b;border:1px solid rgba(224,48,48,0.3)}
+.flow-text{font-size:12px;color:var(--muted);font-weight:600}
+.flow-text strong{color:var(--white)}
+.flow-arrow{color:var(--muted);font-size:18px;flex-shrink:0}
+
+/* COMPARAR FUENTES */
+.source-compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.source-card{border-radius:2px;overflow:hidden}
+.source-head{padding:10px 14px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.sh-api{background:rgba(14,165,233,0.2);color:#38bdf8}
+.sh-excel{background:rgba(22,163,74,0.2);color:#4ade80}
+.sh-json{background:rgba(245,158,11,0.2);color:#fbbf24}
+.source-body{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-top:none;padding:12px 14px}
+.source-item{font-size:12px;color:var(--muted);line-height:1.6;display:flex;align-items:flex-start;gap:7px;margin-bottom:6px}
+.source-item:last-child{margin-bottom:0}
+.source-item::before{flex-shrink:0;font-size:12px}
+.si-ok::before{content:"✓";color:var(--green)}
+.si-no::before{content:"✗";color:var(--red)}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tip{background:var(--navy2);border:1px solid var(--border);border-left:3px solid var(--blue);padding:14px 16px;border-radius:0 2px 2px 0}
+.tip-t{font-size:10px;font-weight:700;color:var(--blue-light);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.tip-d{font-size:12px;color:var(--muted);line-height:1.6}
+.tip-d code{font-family:'JetBrains Mono',monospace;background:rgba(74,158,255,0.1);color:var(--blue-light);padding:1px 6px;border-radius:2px;font-size:11px}
+
+/* RESUMEN */
+.resumen{margin-top:40px;background:var(--navy2);border:1px solid var(--border);border-top:2px solid var(--api);border-radius:2px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.res-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:3px;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);border-right:1px solid rgba(56,189,248,0.2);padding-right:16px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:flex-start;gap:8px;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:2px}
+.ri-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.rd-api{background:#38bdf8}
+.rd-excel{background:#4ade80}
+.rd-json{background:#fbbf24}
+
+.footer{background:var(--navy2);border-top:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;margin-top:48px}
+.footer-left{font-size:11px;color:var(--muted)}
+.footer-left b{color:#cc0000}
+.footer-right{font-size:11px;color:var(--muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp .5s ease both}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="taviid-brand">
+    <div class="taviid-pill">TAVIID</div>
+    <div class="taviid-ing">LABS</div>
+  </div>
+  <div class="dev-label">&lt;/&gt; Dev: <span>Deyvid Torrez</span></div>
+</div>
+
+<div class="mod-banner">
+  <div class="mod-number">08</div>
+  <div>
+    <div class="mod-eyebrow">Python desde cero · Proyecto</div>
+    <div class="mod-title"><span class="mod-dot"></span>Manejo de Datos — API · Excel · JSON</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title"><span class="ap">Fuentes de</span> <span class="cy">Datos</span></div>
+  <div class="hero-sub">Tres formas de obtener y manejar información en Python: desde internet con APIs, desde archivos Excel y desde archivos JSON locales</div>
+  <div class="modules-nav">
+    <div class="mod-pill mp-api"><span class="mp-num">01</span> APIs + requests</div>
+    <div class="mod-pill mp-excel"><span class="mp-num">02</span> Excel + pandas</div>
+    <div class="mod-pill mp-json"><span class="mp-num">03</span> JSON local</div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TEMA 1: APIs                              -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tema-header">
+  <div class="tema-badge tb-api">01 · APIs</div>
+  <div class="tema-line tl-api"></div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-api">¿Qué es?</span><span class="sec-title">API — Application Programming Interface</span><span class="sec-line"></span></div>
+<div class="grid2">
+  <div class="card ca">
+    <div class="card-head"><span class="tag ta">API</span><span class="card-title">¿Qué es una API?</span></div>
+    <div class="card-desc">Una API es un <strong>puente entre tu programa y un servidor en internet</strong>. Le haces una pregunta (request) y el servidor te responde con datos (response). Es como pedir el menú en un restaurante — tú pides, el cocinero prepara y el mesero te trae la respuesta.</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+      <div class="flow-row">
+        <span class="flow-badge fb-get">GET</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-text"><strong>Tu programa</strong> envía una petición a una URL</span>
+      </div>
+      <div class="flow-row">
+        <span class="flow-badge fb-200">200 OK</span>
+        <span class="flow-arrow">←</span>
+        <span class="flow-text">El servidor responde con <strong>datos en formato JSON</strong></span>
+      </div>
+      <div class="flow-row">
+        <span class="flow-badge fb-err">ERROR</span>
+        <span class="flow-arrow">←</span>
+        <span class="flow-text">Si algo falla: sin internet, URL incorrecta, servidor caído</span>
+      </div>
+    </div>
+  </div>
+  <div class="card cb">
+    <div class="card-head"><span class="tag tb">¿Para qué sirve?</span><span class="card-title">Casos de uso reales</span></div>
+    <div class="card-desc">Las APIs permiten obtener <strong>datos en tiempo real</strong> sin necesidad de tener archivos propios. Todo lo que ves en apps conectadas a internet usa APIs:</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid #38bdf8;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">☁️ <strong style="color:var(--white)">Clima</strong> — obtener temperatura y pronóstico actuales</div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid #38bdf8;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">🛒 <strong style="color:var(--white)">Catálogos</strong> — productos, precios e inventario actualizados</div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid #38bdf8;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">💱 <strong style="color:var(--white)">Divisas</strong> — tipo de cambio en tiempo real</div>
+      <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid #38bdf8;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">📰 <strong style="color:var(--white)">Noticias</strong> — titulares actualizados cada minuto</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-api">Librería</span><span class="sec-title">requests — cómo instalar y usar</span><span class="sec-line"></span></div>
+<div class="grid2">
+  <div class="card ca">
+    <div class="card-head"><span class="tag ta">pip install</span><span class="card-title">Instalar la librería requests</span></div>
+    <div class="card-desc">Python no incluye <strong>requests</strong> por defecto — hay que instalarla. Se instala una sola vez desde la terminal usando <strong>pip</strong>, el gestor de paquetes de Python.</div>
+    <div class="code" style="margin-bottom:12px">
+      <span class="c"># Abrir terminal / símbolo del sistema y ejecutar:</span><br>
+      <span class="f">pip</span><span class="p"> install requests</span><br><br>
+      <span class="c"># Verificar que se instaló correctamente:</span><br>
+      <span class="f">pip</span><span class="p"> show requests</span>
+    </div>
+    <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid #38bdf8;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+      ⚠ <strong style="color:var(--white)">pip</strong> (Pip Installs Packages) descarga la librería desde internet y la guarda en tu Python. Solo necesitas hacerlo una vez por computadora.
+    </div>
+  </div>
+  <div class="card cb">
+    <div class="card-head"><span class="tag tb">requests.get()</span><span class="card-title">Hacer una petición GET</span></div>
+    <div class="card-desc">El método <strong>GET</strong> es el más común — pide datos al servidor. La respuesta tiene un código de estado y los datos en JSON.</div>
+    <div class="code lb">
+      <span class="kw">import</span><span class="p"> requests</span><br><br>
+      <span class="c"># Hacer la petición</span><br>
+      <span class="v">respuesta</span><span class="p"> = </span><span class="v">requests</span><span class="p">.</span><span class="f">get</span><span class="p">(</span><span class="s">"https://fakestoreapi.com/products"</span><span class="p">)</span><br><br>
+      <span class="c"># Ver el código de estado (200 = éxito)</span><br>
+      <span class="f">print</span><span class="p">(</span><span class="v">respuesta</span><span class="p">.</span><span class="v">status_code</span><span class="p">)</span>  <span class="c"># 200</span><br><br>
+      <span class="c"># Convertir respuesta a datos Python</span><br>
+      <span class="v">datos</span><span class="p"> = </span><span class="v">respuesta</span><span class="p">.</span><span class="f">json</span><span class="p">()</span>  <span class="c"># lista de dicts</span><br>
+      <span class="f">print</span><span class="p">(</span><span class="v">datos</span><span class="p">[</span><span class="n">0</span><span class="p">])</span>  <span class="c"># primer producto</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-api">Función</span><span class="sec-title">descargar_datos() — función completa del proyecto</span><span class="sec-line"></span></div>
+<div class="card ca full">
+  <div class="card-desc" style="margin-bottom:16px">Esta función conecta con <strong>fakestoreapi.com</strong>, descarga el catálogo de productos y lo muestra en la tabla del Dashboard. Usa <strong>try/except</strong> para manejar errores de conexión sin que el programa se cierre:</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="code">
+      <span class="kw">import</span><span class="p"> requests</span><br><br>
+      <span class="kw">def</span> <span class="f">descargar_datos</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">try</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">url</span><span class="p"> = </span><span class="s">"https://fakestoreapi.com/products"</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">respuesta</span><span class="p"> = </span><span class="v">requests</span><span class="p">.</span><span class="f">get</span><span class="p">(</span><span class="v">url</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos_json</span><span class="p"> = </span><span class="v">respuesta</span><span class="p">.</span><span class="f">json</span><span class="p">()</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Limpiar tabla</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="v">fila</span><span class="p">)</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Insertar cada producto</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">item</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">datos_json</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">id_prod</span><span class="p"> = </span><span class="v">item</span><span class="p">[</span><span class="s">"id"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre</span><span class="p"> = </span><span class="v">item</span><span class="p">[</span><span class="s">"title"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">precio</span><span class="p"> = </span><span class="v">item</span><span class="p">[</span><span class="s">"price"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">insert</span><span class="p">(</span><span class="s">""</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">values</span><span class="p">=(</span><span class="v">id_prod</span><span class="p">, </span><span class="v">nombre</span><span class="p">, </span><span class="s">f"$</span><span class="p">{</span><span class="v">precio</span><span class="p">:</span><span class="s">.2f}</span><span class="s">"</span><span class="p">))</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><span class="s">"Éxito"</span><span class="p">, </span><span class="s">"¡Catálogo descargado!"</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">except</span><span class="p"> </span><span class="v">Exception</span><span class="p"> </span><span class="kw">as</span><span class="p"> </span><span class="v">e</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showerror</span><span class="p">(</span><span class="s">"Error de Conexión"</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"No se pudo conectar a la API"</span><span class="p">)</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="font-size:10px;font-weight:700;color:#38bdf8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px">Paso a paso</div>
+      <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid #38bdf8;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#38bdf8">1. requests.get(url)</strong> — envía la petición HTTP al servidor de fakestoreapi
+      </div>
+      <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid #38bdf8;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#38bdf8">2. respuesta.json()</strong> — convierte el texto JSON de la respuesta en una lista de diccionarios Python
+      </div>
+      <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid #38bdf8;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#38bdf8">3. item["id"], item["title"], item["price"]</strong> — accede a cada campo del diccionario por su clave
+      </div>
+      <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-left:3px solid #38bdf8;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#38bdf8">4. try/except</strong> — si no hay internet o falla la conexión, captura el error y muestra un mensaje amigable en vez de romper el programa
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TEMA 2: EXCEL                             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tema-header">
+  <div class="tema-badge tb-excel">02 · Excel</div>
+  <div class="tema-line tl-excel"></div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-excel">¿Qué es?</span><span class="sec-title">pandas — leer archivos Excel con Python</span><span class="sec-line"></span></div>
+<div class="grid2">
+  <div class="card ce">
+    <div class="card-head"><span class="tag te">pandas</span><span class="card-title">¿Qué es pandas?</span></div>
+    <div class="card-desc"><strong>pandas</strong> es la librería más popular de Python para manejar datos en tabla. Permite leer archivos Excel, CSV, filtrar filas, calcular estadísticas y mucho más. Los datos se almacenan en un <strong>DataFrame</strong> — como una hoja de Excel dentro de Python.</div>
+    <div class="code le">
+      <span class="c"># Instalar pandas y openpyxl (para leer .xlsx)</span><br>
+      <span class="f">pip</span><span class="p"> install pandas openpyxl</span><br><br>
+      <span class="c"># Importar en tu código</span><br>
+      <span class="kw">import</span><span class="p"> pandas </span><span class="kw">as</span><span class="p"> pd</span><br><br>
+      <span class="c"># Leer un archivo Excel</span><br>
+      <span class="v">df</span><span class="p"> = </span><span class="v">pd</span><span class="p">.</span><span class="f">read_excel</span><span class="p">(</span><span class="s">"archivo.xlsx"</span><span class="p">)</span><br>
+      <span class="f">print</span><span class="p">(</span><span class="v">df</span><span class="p">)</span>  <span class="c"># muestra la tabla completa</span>
+    </div>
+  </div>
+  <div class="card cb">
+    <div class="card-head"><span class="tag tb">DataFrame</span><span class="card-title">¿Qué es un DataFrame?</span></div>
+    <div class="card-desc">Un <strong>DataFrame</strong> es una tabla de datos con filas y columnas, igual que Excel. Cada columna tiene un nombre y cada fila un índice. Para recorrer las filas se usa <strong>iterrows()</strong>.</div>
+    <div class="code lb">
+      <span class="v">df</span><span class="p"> = </span><span class="v">pd</span><span class="p">.</span><span class="f">read_excel</span><span class="p">(</span><span class="s">"Reporte_Mercado.xlsx"</span><span class="p">)</span><br><br>
+      <span class="c"># Acceder a una columna completa</span><br>
+      <span class="f">print</span><span class="p">(</span><span class="v">df</span><span class="p">[</span><span class="s">"Producto"</span><span class="p">])</span><br><br>
+      <span class="c"># Recorrer fila por fila</span><br>
+      <span class="kw">for</span><span class="p"> </span><span class="v">index</span><span class="p">, </span><span class="v">row</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">df</span><span class="p">.</span><span class="f">iterrows</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="v">row</span><span class="p">[</span><span class="s">"ID"</span><span class="p">], </span><span class="v">row</span><span class="p">[</span><span class="s">"Producto"</span><span class="p">])</span><br><br>
+      <span class="c"># index = número de fila (0,1,2...)</span><br>
+      <span class="c"># row   = datos de esa fila como dict</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-excel">Función</span><span class="sec-title">descargar_datos() — cargar desde Excel</span><span class="sec-line"></span></div>
+<div class="card ce full">
+  <div class="card-desc" style="margin-bottom:16px">Esta función lee el archivo <strong>Reporte_Mercado.xlsx</strong> y carga los datos en la tabla del Dashboard. Incluye conversión del precio que viene con el texto "Bs":</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="code le">
+      <span class="kw">import</span><span class="p"> pandas </span><span class="kw">as</span><span class="p"> pd</span><br><br>
+      <span class="kw">def</span> <span class="f">descargar_datos</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">try</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">df</span><span class="p"> = </span><span class="v">pd</span><span class="p">.</span><span class="f">read_excel</span><span class="p">(</span><span class="s">"Reporte_Mercado.xlsx"</span><span class="p">)</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Limpiar tabla</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="v">fila</span><span class="p">)</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Recorrer el DataFrame fila por fila</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">index</span><span class="p">, </span><span class="v">row</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">df</span><span class="p">.</span><span class="f">iterrows</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">id_prod</span><span class="p"> = </span><span class="v">row</span><span class="p">[</span><span class="s">"ID"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre</span><span class="p"> = </span><span class="v">row</span><span class="p">[</span><span class="s">"Producto"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Limpiar "Bs" del precio y convertir a float</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">precio</span><span class="p"> = </span><span class="f">float</span><span class="p">(</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">str</span><span class="p">(</span><span class="v">row</span><span class="p">[</span><span class="s">"Precio"</span><span class="p">])</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.</span><span class="f">replace</span><span class="p">(</span><span class="s">"Bs"</span><span class="p">, </span><span class="s">""</span><span class="p">).</span><span class="f">strip</span><span class="p">()</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">insert</span><span class="p">(</span><span class="s">""</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">values</span><span class="p">=(</span><span class="v">id_prod</span><span class="p">, </span><span class="v">nombre</span><span class="p">, </span><span class="s">f"Bs</span><span class="p">{</span><span class="v">precio</span><span class="p">:</span><span class="s">.2f}</span><span class="s">"</span><span class="p">))</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><span class="s">"Éxito"</span><span class="p">, </span><span class="s">"Datos cargados desde Excel"</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">except</span><span class="p"> </span><span class="v">Exception</span><span class="p"> </span><span class="kw">as</span><span class="p"> </span><span class="v">e</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showerror</span><span class="p">(</span><span class="s">"Error"</span><span class="p">, </span><span class="f">str</span><span class="p">(</span><span class="v">e</span><span class="p">))</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="font-size:10px;font-weight:700;color:#4ade80;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px">Puntos clave</div>
+      <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-left:3px solid #4ade80;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#4ade80">pd.read_excel()</strong> — lee el archivo .xlsx y lo convierte en un DataFrame. El archivo debe estar en la misma carpeta que el script.
+      </div>
+      <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-left:3px solid #4ade80;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#4ade80">df.iterrows()</strong> — devuelve cada fila como un par (índice, datos). Se usa en un for para recorrer la tabla fila por fila.
+      </div>
+      <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-left:3px solid #4ade80;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#4ade80">str().replace("Bs","").strip()</strong> — el precio puede venir como "Bs15.00". Se elimina el texto "Bs" y los espacios, luego se convierte a float para operar con él.
+      </div>
+      <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-left:3px solid #4ade80;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#4ade80">except Exception as e</strong> — captura cualquier error y lo muestra con <code style="font-family:'JetBrains Mono',monospace;font-size:11px">str(e)</code>. Útil para ver exactamente qué falló.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TEMA 3: JSON                              -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tema-header">
+  <div class="tema-badge tb-json">03 · JSON</div>
+  <div class="tema-line tl-json"></div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-json">¿Qué es?</span><span class="sec-title">JSON — formato de intercambio de datos</span><span class="sec-line"></span></div>
+<div class="grid2">
+  <div class="card cj">
+    <div class="card-head"><span class="tag tj">JSON</span><span class="card-title">¿Qué es JSON?</span></div>
+    <div class="card-desc">JSON (JavaScript Object Notation) es un <strong>formato de texto para guardar y transportar datos</strong>. Es legible por humanos y fácil de procesar por cualquier lenguaje de programación. Python lo maneja con la librería <strong>json</strong> incluida — no necesita instalación.</div>
+    <div class="json-block">
+      <span class="jp">[</span><br>
+      <span class="jp">&nbsp;&nbsp;{</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"id"</span><span class="jp">: </span><span class="jv-n">1</span><span class="jp">,</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"title"</span><span class="jp">: </span><span class="jv-s">"Arroz 1kg"</span><span class="jp">,</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"price"</span><span class="jp">: </span><span class="jv-n">250.0</span><br>
+      <span class="jp">&nbsp;&nbsp;},</span><br>
+      <span class="jp">&nbsp;&nbsp;{</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"id"</span><span class="jp">: </span><span class="jv-n">2</span><span class="jp">,</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"title"</span><span class="jp">: </span><span class="jv-s">"Azúcar 1kg"</span><span class="jp">,</span><br>
+      <span class="jp">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="jk">"price"</span><span class="jp">: </span><span class="jv-n">7.8</span><br>
+      <span class="jp">&nbsp;&nbsp;}</span><br>
+      <span class="jp">]</span>
+    </div>
+  </div>
+  <div class="card cam">
+    <div class="card-head"><span class="tag tam">Estructura</span><span class="card-title">JSON en Python</span></div>
+    <div class="card-desc">JSON se convierte automáticamente en tipos Python: un <strong>objeto {} → diccionario</strong>, un <strong>array [] → lista</strong>, strings → str, números → int/float, true/false → True/False.</div>
+    <div class="code lam">
+      <span class="kw">import</span><span class="p"> json</span><br><br>
+      <span class="c"># LEER un archivo JSON</span><br>
+      <span class="kw">with</span><span class="p"> </span><span class="f">open</span><span class="p">(</span><span class="s">"productos.json"</span><span class="p">, </span><span class="s">"r"</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">encoding</span><span class="p">=</span><span class="s">"utf-8"</span><span class="p">) </span><span class="kw">as</span><span class="p"> </span><span class="v">archivo</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos</span><span class="p"> = </span><span class="v">json</span><span class="p">.</span><span class="f">load</span><span class="p">(</span><span class="v">archivo</span><span class="p">)</span>  <span class="c"># lista</span><br><br>
+      <span class="c"># GUARDAR un JSON</span><br>
+      <span class="kw">with</span><span class="p"> </span><span class="f">open</span><span class="p">(</span><span class="s">"productos.json"</span><span class="p">, </span><span class="s">"w"</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">encoding</span><span class="p">=</span><span class="s">"utf-8"</span><span class="p">) </span><span class="kw">as</span><span class="p"> </span><span class="v">archivo</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">json</span><span class="p">.</span><span class="f">dump</span><span class="p">(</span><span class="v">datos</span><span class="p">, </span><span class="v">archivo</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">indent</span><span class="p">=</span><span class="n">4</span><span class="p">, </span><span class="v">ensure_ascii</span><span class="p">=</span><span class="kw">False</span><span class="p">)</span>
+    </div>
+  </div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-json">Path</span><span class="sec-title">BASE_DIR — encontrar el archivo en cualquier computadora</span><span class="sec-line"></span></div>
+<div class="card cj full" style="margin-bottom:16px">
+  <div class="card-desc" style="margin-bottom:14px">El problema clásico: en tu computadora el archivo está en <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#fbbf24">C:\Users\Taviid\proyecto\</code> pero en otra computadora el path es diferente. La solución es calcular la ruta <strong>relativa al propio script</strong>:</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div>
+      <div style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Código completo del path</div>
+      <div class="code lj">
+        <span class="kw">import</span><span class="p"> os</span><br>
+        <span class="kw">import</span><span class="p"> sys</span><br><br>
+        <span class="c"># ¿El programa corre como .exe o como .py?</span><br>
+        <span class="kw">if</span><span class="p"> </span><span class="f">getattr</span><span class="p">(</span><span class="v">sys</span><span class="p">, </span><span class="s">"frozen"</span><span class="p">, </span><span class="kw">False</span><span class="p">):</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Corriendo como .exe (PyInstaller)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">BASE_DIR</span><span class="p"> = </span><span class="v">os</span><span class="p">.</span><span class="v">path</span><span class="p">.</span><span class="f">dirname</span><span class="p">(</span><span class="v">sys</span><span class="p">.</span><span class="v">executable</span><span class="p">)</span><br>
+        <span class="kw">else</span><span class="p">:</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Corriendo como script .py normal</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">BASE_DIR</span><span class="p"> = </span><span class="v">os</span><span class="p">.</span><span class="v">path</span><span class="p">.</span><span class="f">dirname</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">os</span><span class="p">.</span><span class="v">path</span><span class="p">.</span><span class="f">abspath</span><span class="p">(</span><span class="v">__file__</span><span class="p">)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;)</span><br><br>
+        <span class="c"># Construir la ruta completa al JSON</span><br>
+        <span class="v">RUTA_JSON</span><span class="p"> = </span><span class="v">os</span><span class="p">.</span><span class="v">path</span><span class="p">.</span><span class="f">join</span><span class="p">(</span><span class="v">BASE_DIR</span><span class="p">, </span><span class="s">"productos_minimarket.json"</span><span class="p">)</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px">¿Por qué es necesario?</div>
+      <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-left:3px solid #fbbf24;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#fbbf24">sys.frozen</strong> — cuando empaquetas el programa con PyInstaller como .exe, <code style="font-family:'JetBrains Mono',monospace;font-size:11px">__file__</code> ya no existe. <code style="font-family:'JetBrains Mono',monospace;font-size:11px">sys.frozen</code> detecta si está corriendo como ejecutable.
+      </div>
+      <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-left:3px solid #fbbf24;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#fbbf24">os.path.abspath(__file__)</strong> — obtiene la ruta absoluta del script .py actual, sin importar desde dónde se ejecute.
+      </div>
+      <div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-left:3px solid #fbbf24;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+        <strong style="color:#fbbf24">os.path.join()</strong> — une la carpeta base con el nombre del archivo de forma correcta en cualquier sistema operativo (Windows, Mac, Linux).
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-header"><span class="sec-num sn-json">Funciones</span><span class="sec-title">descargar_datos() y guardar_json() — leer y escribir</span><span class="sec-line"></span></div>
+<div class="grid2">
+  <div class="card cj">
+    <div class="card-head"><span class="tag tj">json.load</span><span class="card-title">descargar_datos() — leer JSON</span></div>
+    <div class="card-desc">Lee el archivo JSON local y carga los productos en la tabla. Usa <strong>RUTA_JSON</strong> para encontrar el archivo en cualquier computadora.</div>
+    <div class="code lj">
+      <span class="kw">def</span> <span class="f">descargar_datos</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">try</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">with</span><span class="p"> </span><span class="f">open</span><span class="p">(</span><span class="v">RUTA_JSON</span><span class="p">, </span><span class="s">"r"</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">encoding</span><span class="p">=</span><span class="s">"utf-8"</span><span class="p">) </span><span class="kw">as</span><span class="p"> </span><span class="v">archivo</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos_json</span><span class="p"> = </span><span class="v">json</span><span class="p">.</span><span class="f">load</span><span class="p">(</span><span class="v">archivo</span><span class="p">)</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="v">fila</span><span class="p">)</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">item</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">datos_json</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">insert</span><span class="p">(</span><span class="s">""</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">values</span><span class="p">=(</span><span class="v">item</span><span class="p">[</span><span class="s">"id"</span><span class="p">],</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">item</span><span class="p">[</span><span class="s">"title"</span><span class="p">],</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">f"Bs</span><span class="p">{</span><span class="v">item</span><span class="p">[</span><span class="s">'price'</span><span class="p">]</span><span class="s">:.2f}</span><span class="s">"</span><span class="p">))</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><span class="s">"Éxito"</span><span class="p">, </span><span class="s">"¡Catálogo cargado!"</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">except</span><span class="p"> </span><span class="v">Exception</span><span class="p"> </span><span class="kw">as</span><span class="p"> </span><span class="v">e</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showerror</span><span class="p">(</span><span class="s">"Error"</span><span class="p">, </span><span class="f">str</span><span class="p">(</span><span class="v">e</span><span class="p">))</span>
+    </div>
+  </div>
+  <div class="card cam">
+    <div class="card-head"><span class="tag tam">json.dump</span><span class="card-title">guardar_json() — escribir JSON</span></div>
+    <div class="card-desc">Lee los datos actuales de la tabla y los guarda de vuelta en el archivo JSON. Convierte el precio limpiando el texto "Bs" antes de guardarlo como número.</div>
+    <div class="code lam">
+      <span class="kw">def</span> <span class="f">guardar_json</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos</span><span class="p"> = []</span><br><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Leer cada fila de la tabla</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">valores</span><span class="p"> = </span><span class="v">tabla</span><span class="p">.</span><span class="f">item</span><span class="p">(</span><span class="v">fila</span><span class="p">)[</span><span class="s">"values"</span><span class="p">]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos</span><span class="p">.</span><span class="f">append</span><span class="p">({</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"id"</span><span class="p">: </span><span class="f">int</span><span class="p">(</span><span class="v">valores</span><span class="p">[</span><span class="n">0</span><span class="p">]),</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"title"</span><span class="p">: </span><span class="v">valores</span><span class="p">[</span><span class="n">1</span><span class="p">],</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"price"</span><span class="p">: </span><span class="f">float</span><span class="p">(</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">str</span><span class="p">(</span><span class="v">valores</span><span class="p">[</span><span class="n">2</span><span class="p">])</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.</span><span class="f">replace</span><span class="p">(</span><span class="s">"Bs"</span><span class="p">, </span><span class="s">""</span><span class="p">).</span><span class="f">strip</span><span class="p">()</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})</span><br><br>
+      <span class="c">&nbsp;&nbsp;&nbsp;&nbsp;# Guardar en archivo</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">with</span><span class="p"> </span><span class="f">open</span><span class="p">(</span><span class="v">RUTA_JSON</span><span class="p">, </span><span class="s">"w"</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">encoding</span><span class="p">=</span><span class="s">"utf-8"</span><span class="p">) </span><span class="kw">as</span><span class="p"> </span><span class="v">archivo</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">json</span><span class="p">.</span><span class="f">dump</span><span class="p">(</span><span class="v">datos</span><span class="p">, </span><span class="v">archivo</span><span class="p">,</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">indent</span><span class="p">=</span><span class="n">4</span><span class="p">, </span><span class="v">ensure_ascii</span><span class="p">=</span><span class="kw">False</span><span class="p">)</span>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARAR LAS 3 FUENTES -->
+<div class="sec-header"><span class="sec-num sn-json">Comparativa</span><span class="sec-title">¿Cuándo usar cada fuente de datos?</span><span class="sec-line"></span></div>
+<div class="source-compare" style="margin-bottom:0">
+  <div class="source-card">
+    <div class="source-head sh-api">API — internet</div>
+    <div class="source-body">
+      <div class="source-item si-ok">Datos en tiempo real y siempre actualizados</div>
+      <div class="source-item si-ok">No necesitas gestionar archivos</div>
+      <div class="source-item si-ok">Ideal para catálogos, precios, clima</div>
+      <div class="source-item si-no">Requiere conexión a internet</div>
+      <div class="source-item si-no">Depende de un servidor externo</div>
+      <div class="source-item si-no">Puede tener límites de peticiones</div>
+    </div>
+  </div>
+  <div class="source-card">
+    <div class="source-head sh-excel">Excel — archivo local</div>
+    <div class="source-body">
+      <div class="source-item si-ok">Fácil de editar por cualquier persona</div>
+      <div class="source-item si-ok">Ideal para reportes y datos de negocio</div>
+      <div class="source-item si-ok">Funciona sin internet</div>
+      <div class="source-item si-no">Requiere pandas y openpyxl instalados</div>
+      <div class="source-item si-no">El archivo debe estar en el lugar correcto</div>
+      <div class="source-item si-no">No es ideal para datos muy grandes</div>
+    </div>
+  </div>
+  <div class="source-card">
+    <div class="source-head sh-json">JSON — archivo local</div>
+    <div class="source-body">
+      <div class="source-item si-ok">Incluido en Python, sin instalación</div>
+      <div class="source-item si-ok">Funciona sin internet</div>
+      <div class="source-item si-ok">Se puede leer y guardar fácilmente</div>
+      <div class="source-item si-ok">Ideal para guardar datos del propio programa</div>
+      <div class="source-item si-no">No es editable fácilmente por no-programadores</div>
+      <div class="source-item si-no">No es ideal para datos tabulares grandes</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="sec-header"><span class="sec-num sn-api">Tips</span><span class="sec-title">Buenas Prácticas</span><span class="sec-line"></span></div>
+<div class="tips-grid">
+  <div class="tip">
+    <div class="tip-t">Siempre usar try/except</div>
+    <div class="tip-d">Toda operación con datos externos (API, archivo) puede fallar. Envuélvela en <code>try/except</code> para mostrar un mensaje útil al usuario en vez de un error técnico.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-t">encoding="utf-8" siempre</div>
+    <div class="tip-d">Al abrir archivos JSON con <code>open()</code>, siempre especifica <code>encoding="utf-8"</code>. Sin esto, los acentos (á, é, ñ) pueden causar errores en Windows.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-t">ensure_ascii=False en json.dump</div>
+    <div class="tip-d">Al guardar JSON con <code>json.dump()</code>, usa <code>ensure_ascii=False</code> para que los caracteres especiales (ñ, acentos) se guarden correctamente y no como códigos <code>\u00f1</code>.</div>
+  </div>
+  <div class="tip">
+    <div class="tip-t">BASE_DIR para paths portables</div>
+    <div class="tip-d">Nunca escribas rutas absolutas como <code>C:\Users\...</code>. Usa siempre <code>BASE_DIR + os.path.join()</code> para que el programa funcione en cualquier computadora.</div>
+  </div>
+</div>
+
+<!-- RESUMEN -->
+<div class="resumen">
+  <div class="res-label">Resumen</div>
+  <div class="res-grid">
+    <div class="ri"><span class="ri-dot rd-api"></span>API = puente entre tu app e internet · requests.get() + .json()</div>
+    <div class="ri"><span class="ri-dot rd-api"></span>pip install requests instala la librería — solo una vez por computadora</div>
+    <div class="ri"><span class="ri-dot rd-excel"></span>pandas lee .xlsx con read_excel() y recorre filas con iterrows()</div>
+    <div class="ri"><span class="ri-dot rd-excel"></span>pip install pandas openpyxl — ambas son necesarias para leer Excel</div>
+    <div class="ri"><span class="ri-dot rd-json"></span>json.load() lee · json.dump() guarda — librería incluida en Python</div>
+    <div class="ri"><span class="ri-dot rd-json"></span>BASE_DIR + sys.frozen hace que el path funcione como .py y como .exe</div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left"><b>TAVIID</b> LABS · Programación Python · Módulo 08</div>
+  <div class="footer-right">&lt;/&gt; Dev: Deyvid Torrez</div>
+</div>
+
+</body>
+</html>

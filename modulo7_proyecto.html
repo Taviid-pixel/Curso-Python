@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Módulo 07 — Dashboard Analítico · TAVIID</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#050e1a;--navy2:#0a1a2e;--navy3:#0f2444;--blue:#1a73e8;--blue-light:#4a9eff;--cyan:#00c9b8;--amber:#f4a900;--green:#00c17a;--red:#e03030;--indigo:#6366f1;--white:#f0f6ff;--muted:#7a9ab8;--border:rgba(255,255,255,0.07);--code-bg:#0a1220}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+.topbar{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.taviid-brand{display:flex;align-items:center;gap:10px}
+.taviid-pill{background:#cc0000;color:#fff;font-size:13px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}
+.taviid-ing{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
+.dev-label{font-size:12px;color:var(--muted);font-weight:500}
+.dev-label span{color:var(--amber);font-weight:700}
+
+.mod-banner{background:linear-gradient(135deg,#4f46e5 0%,var(--navy3) 60%);padding:32px 40px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.mod-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.mod-banner::after{content:'';position:absolute;right:80px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.mod-number{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:rgba(255,255,255,0.12);line-height:1;letter-spacing:-4px;user-select:none}
+.mod-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.mod-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.mod-dot{display:inline-block;width:6px;height:6px;background:#a5b4fc;border-radius:50%;margin-right:8px;vertical-align:middle}
+
+.hero{padding:48px 40px 32px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(79,70,229,0.15) 0%,transparent 70%)}
+.hero-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1.1;margin-bottom:12px}
+.hero-title .in{color:#a5b4fc}
+.hero-title .cy{color:var(--cyan)}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:500;max-width:560px;margin:0 auto 20px}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-pill{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:5px 14px;border-radius:2px;border:1px solid;background:rgba(79,70,229,0.1);color:#a5b4fc;border-color:rgba(165,180,252,0.3)}
+
+.page{padding:0 40px 60px}
+
+.sec-header{display:flex;align-items:center;gap:12px;margin:40px 0 20px}
+.sec-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:2px;background:rgba(165,180,252,0.1);border:1px solid rgba(165,180,252,0.2);padding:4px 10px;border-radius:2px;text-transform:uppercase}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+.card{background:var(--navy2);border:1px solid var(--border);border-top:2px solid transparent;padding:20px;border-radius:2px;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card.a-indigo{border-top-color:#a5b4fc}
+.card.a-blue{border-top-color:var(--blue-light)}
+.card.a-cyan{border-top-color:var(--cyan)}
+.card.a-green{border-top-color:var(--green)}
+.card.a-amber{border-top-color:var(--amber)}
+.card.a-red{border-top-color:var(--red)}
+.card.a-purple{border-top-color:#c084fc}
+
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:700;padding:3px 9px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.t-indigo{background:rgba(165,180,252,0.15);color:#a5b4fc;border:1px solid rgba(165,180,252,0.3)}
+.t-blue{background:rgba(74,158,255,0.15);color:var(--blue-light);border:1px solid rgba(74,158,255,0.3)}
+.t-cyan{background:rgba(0,201,184,0.15);color:var(--cyan);border:1px solid rgba(0,201,184,0.3)}
+.t-green{background:rgba(0,193,122,0.15);color:var(--green);border:1px solid rgba(0,193,122,0.3)}
+.t-amber{background:rgba(244,169,0,0.15);color:var(--amber);border:1px solid rgba(244,169,0,0.3)}
+.t-red{background:rgba(224,48,48,0.15);color:#ff6b6b;border:1px solid rgba(224,48,48,0.3)}
+.t-purple{background:rgba(192,132,252,0.15);color:#c084fc;border:1px solid rgba(192,132,252,0.3)}
+
+.card-title{font-size:14px;font-weight:700;color:var(--white)}
+.card-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.card-desc strong{color:var(--white);font-weight:600}
+
+.code{background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);border-left:3px solid #a5b4fc;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;border-radius:0 2px 2px 0;overflow-x:auto}
+.code.c-blue{border-left-color:var(--blue-light)}
+.code.c-green{border-left-color:var(--green)}
+.code.c-amber{border-left-color:var(--amber)}
+.code.c-red{border-left-color:var(--red)}
+.code.c-cyan{border-left-color:var(--cyan)}
+.code.c-purple{border-left-color:#c084fc}
+.kw{color:#ff79c6}.s{color:#f1fa8c}.n{color:#bd93f9}.c{color:#3d5a73;font-style:italic}.v{color:#8be9fd}.f{color:#50fa7b}.p{color:#f8f8f2}
+
+/* PREVIEW DASHBOARD */
+.dash-preview{background:#f3f4f6;border-radius:4px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.dash-titlebar{background:#fff;padding:14px 20px;border-bottom:1px solid #e2e8f0;text-align:center}
+.dash-app-title{font-size:16px;font-weight:800;color:#1e293b;font-family:'Space Grotesk',sans-serif}
+.dash-app-sub{font-size:11px;color:#64748b;font-weight:500;margin-top:2px}
+.dash-controls{padding:14px 20px;display:flex;gap:10px;justify-content:center;background:#f3f4f6}
+.dash-btn{padding:7px 16px;border:none;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+.dash-btn-blue{background:#0284c7;color:white}
+.dash-btn-green{background:#10b981;color:white}
+.dash-btn-purple{background:#8b5cf6;color:white}
+.dash-table{margin:0 20px 16px;border-radius:4px;overflow:hidden;border:1px solid #e2e8f0}
+.dash-th{background:#f8fafc;padding:8px 14px;font-size:11px;font-weight:700;color:#475569;text-align:left;border-bottom:1px solid #e2e8f0;font-family:'Space Grotesk',sans-serif}
+.dash-td{padding:9px 14px;font-size:11px;color:#334155;border-bottom:1px solid #f1f5f9;font-family:'Space Grotesk',sans-serif}
+.dash-tr:last-child .dash-td{border-bottom:none}
+.dash-tr:hover .dash-td{background:#f8fafc}
+
+/* LAYOUT DIAGRAM */
+.layout-diagram{background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);padding:20px;border-radius:2px}
+.layout-frame{border:2px dashed;border-radius:2px;padding:10px;margin-bottom:8px;position:relative}
+.layout-label{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;position:absolute;top:-8px;left:10px;padding:0 6px;font-family:'Space Grotesk',sans-serif}
+.lf-window{border-color:rgba(165,180,252,0.4)}
+.ll-window{background:var(--navy2);color:#a5b4fc}
+.lf-header{border-color:rgba(74,158,255,0.4);margin:8px}
+.ll-header{background:var(--navy2);color:var(--blue-light)}
+.lf-controls{border-color:rgba(0,193,122,0.4);margin:8px}
+.ll-controls{background:var(--navy2);color:var(--green)}
+.lf-tabla{border-color:rgba(244,169,0,0.4);margin:8px}
+.ll-tabla{background:var(--navy2);color:var(--amber)}
+.layout-inner{padding:8px;font-size:11px;color:var(--muted);text-align:center;font-family:'JetBrains Mono',monospace}
+
+/* MESSAGEBOX PREVIEW */
+.msg-preview{background:#e8eaf0;border:1px solid #c0c4cc;border-radius:4px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;max-width:260px}
+.msg-title-bar{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#333;font-family:'Space Grotesk',sans-serif}
+.msg-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.msg-i-info{background:#0284c7;color:white}
+.msg-i-warn{background:#f59e0b;color:white}
+.msg-i-err{background:#ef4444;color:white}
+.msg-body{font-size:11px;color:#444;font-family:'Space Grotesk',sans-serif;line-height:1.5;padding:4px 0}
+.msg-btns{display:flex;gap:6px;justify-content:flex-end}
+.msg-btn{padding:4px 12px;border-radius:2px;font-size:10px;font-weight:700;border:none;font-family:'Space Grotesk',sans-serif;cursor:pointer}
+.mb-ok{background:#0284c7;color:white}
+.mb-cancel{background:#e2e8f0;color:#444}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tip{background:var(--navy2);border:1px solid var(--border);border-left:3px solid #4f46e5;padding:14px 16px;border-radius:0 2px 2px 0;transition:border-color .2s}
+.tip:hover{border-left-color:var(--cyan)}
+.tip-t{font-size:10px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.tip-d{font-size:12px;color:var(--muted);line-height:1.6}
+.tip-d code{font-family:'JetBrains Mono',monospace;background:rgba(165,180,252,0.1);color:#a5b4fc;padding:1px 6px;border-radius:2px;font-size:11px}
+
+/* RESUMEN */
+.resumen{margin-top:40px;background:var(--navy2);border:1px solid var(--border);border-top:2px solid #a5b4fc;border-radius:2px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.res-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:3px;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);border-right:1px solid rgba(165,180,252,0.2);padding-right:16px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:flex-start;gap:8px;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:2px}
+.ri-dot{width:5px;height:5px;background:#a5b4fc;border-radius:50%;flex-shrink:0;margin-top:6px}
+
+.footer{background:var(--navy2);border-top:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;margin-top:48px}
+.footer-left{font-size:11px;color:var(--muted);font-weight:500}
+.footer-left b{color:#cc0000}
+.footer-right{font-size:11px;color:var(--muted)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp .5s ease both}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="taviid-brand">
+    <div class="taviid-pill">TAVIID</div>
+    <div class="taviid-ing">LABS</div>
+  </div>
+  <div class="dev-label">&lt;/&gt; Dev: <span>Deyvid Torrez</span></div>
+</div>
+
+<div class="mod-banner">
+  <div class="mod-number">07</div>
+  <div>
+    <div class="mod-eyebrow">Python desde cero · Proyecto</div>
+    <div class="mod-title"><span class="mod-dot"></span>Dashboard Analítico — Módulo 1: Interfaz Visual</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title"><span class="in">Dashboard</span> <span class="cy">Analítico</span></div>
+  <div class="hero-sub">Construimos la interfaz visual del proyecto: ventana, frames, tabla con Treeview y botones con acciones de prueba usando messagebox</div>
+  <div class="hero-pills">
+    <span class="hero-pill">ttk</span>
+    <span class="hero-pill">Treeview</span>
+    <span class="hero-pill">ttk.Style</span>
+    <span class="hero-pill">Frame</span>
+    <span class="hero-pill">messagebox</span>
+    <span class="hero-pill">fill + expand</span>
+    <span class="hero-pill">pack()</span>
+    <span class="hero-pill">grid()</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- SECCIÓN 1: RESULTADO FINAL -->
+  <div class="sec-header"><span class="sec-num">01</span><span class="sec-title">¿Qué vamos a construir?</span><span class="sec-line"></span></div>
+  <div class="card a-indigo full">
+    <div class="card-desc" style="margin-bottom:16px">Al finalizar esta clase tendrás esta interfaz funcionando. En módulos siguientes se conectará con APIs reales, exportación a Excel y gráficos:</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="dash-preview">
+        <div class="dash-titlebar">
+          <div class="dash-app-title">Analizador de Mercado</div>
+          <div class="dash-app-sub">Módulo 1: Interfaz Visual</div>
+        </div>
+        <div class="dash-controls">
+          <button class="dash-btn dash-btn-blue">☁️ Descargar (API)</button>
+          <button class="dash-btn dash-btn-green">📊 Exportar Excel</button>
+          <button class="dash-btn dash-btn-purple">📈 Ver Gráfica</button>
+        </div>
+        <div class="dash-table">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr>
+                <th class="dash-th" style="width:50px">ID</th>
+                <th class="dash-th">Nombre del Producto</th>
+                <th class="dash-th" style="text-align:right">Precio (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="dash-tr"><td class="dash-td" style="text-align:center">1</td><td class="dash-td">Monitor Curvo 24'</td><td class="dash-td" style="text-align:right">$150.50</td></tr>
+              <tr class="dash-tr"><td class="dash-td" style="text-align:center">2</td><td class="dash-td">Teclado Mecánico RGB</td><td class="dash-td" style="text-align:right">$45.00</td></tr>
+              <tr class="dash-tr"><td class="dash-td" style="text-align:center">3</td><td class="dash-td">Silla Ergonómica Ejecutiva</td><td class="dash-td" style="text-align:right">$120.99</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">Estructura de la ventana</div>
+        <div class="layout-diagram">
+          <div class="layout-frame lf-window" style="padding:14px">
+            <span class="layout-label ll-window">ventana tk.Tk()</span>
+            <div class="layout-frame lf-header">
+              <span class="layout-label ll-header">frame_header · fill=X</span>
+              <div class="layout-inner">Título + Subtítulo (Labels)</div>
+            </div>
+            <div class="layout-frame lf-controls">
+              <span class="layout-label ll-controls">frame_controles · grid()</span>
+              <div class="layout-inner">Botón API &nbsp;|&nbsp; Botón Excel &nbsp;|&nbsp; Botón Gráfica</div>
+            </div>
+            <div class="layout-frame lf-tabla">
+              <span class="layout-label ll-tabla">frame_tabla · fill=BOTH expand=True</span>
+              <div class="layout-inner">ttk.Treeview — ID | Producto | Precio</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: TTK VS TKINTER -->
+  <div class="sec-header"><span class="sec-num">02</span><span class="sec-title">tkinter vs ttk — ¿cuál usar?</span><span class="sec-line"></span></div>
+  <div class="grid2">
+    <div class="card a-blue">
+      <div class="card-head"><span class="tag t-blue">tkinter</span><span class="card-title">Widgets básicos</span></div>
+      <div class="card-desc">Los widgets de <strong>tkinter</strong> son simples y funcionales. Permiten personalizar colores y fuentes fácilmente con <strong>bg</strong> y <strong>fg</strong>. Se usan para Label, Button, Entry, Frame.</div>
+      <div class="code c-blue">
+        <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br><br>
+        <span class="c"># Control total de colores</span><br>
+        <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Título"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">bg</span><span class="p">=</span><span class="s">"#ffffff"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">fg</span><span class="p">=</span><span class="s">"#1e293b"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">20</span><span class="p">, </span><span class="s">"bold"</span><span class="p">)</span><br>
+        <span class="p">)</span>
+      </div>
+    </div>
+    <div class="card a-indigo">
+      <div class="card-head"><span class="tag t-indigo">ttk</span><span class="card-title">Widgets con estilo nativo</span></div>
+      <div class="card-desc"><strong>ttk</strong> (Themed Tk) ofrece widgets de aspecto más moderno y nativo del sistema operativo. Incluye <strong>Treeview</strong>, <strong>Style</strong>, Combobox y más. Los colores se controlan con <strong>Style</strong>, no con bg/fg.</div>
+      <div class="code">
+        <span class="kw">from</span><span class="p"> tkinter </span><span class="kw">import</span><span class="p"> ttk</span><br><br>
+        <span class="c"># Treeview — tabla avanzada</span><br>
+        <span class="v">tabla</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Treeview</span><span class="p">(</span><span class="v">frame</span><span class="p">)</span><br><br>
+        <span class="c"># Estilo personalizado</span><br>
+        <span class="v">estilo</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Style</span><span class="p">()</span><br>
+        <span class="v">estilo</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><span class="s">"Treeview"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">rowheight</span><span class="p">=</span><span class="n">30</span><span class="p">)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: FRAME COMO CONTENEDOR -->
+  <div class="sec-header"><span class="sec-num">03</span><span class="sec-title">Frame — organizar la interfaz en secciones</span><span class="sec-line"></span></div>
+  <div class="card a-indigo full" style="margin-bottom:16px">
+    <div class="card-desc" style="margin-bottom:14px">Un <strong>Frame</strong> es un contenedor invisible que agrupa widgets. Permite organizar la ventana en zonas independientes — cada zona se posiciona y estila por separado.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Los 3 frames del proyecto</div>
+        <div class="code">
+          <span class="c"># Frame 1: encabezado blanco</span><br>
+          <span class="v">frame_header</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#ffffff"</span><span class="p">, </span><span class="v">pady</span><span class="p">=</span><span class="n">15</span><br>
+          <span class="p">)</span><br>
+          <span class="v">frame_header</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">X</span><span class="p">)</span>  <span class="c"># ancho total</span><br><br>
+          <span class="c"># Frame 2: zona de botones</span><br>
+          <span class="v">frame_controles</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#f3f4f6"</span><br>
+          <span class="p">)</span><br>
+          <span class="v">frame_controles</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">20</span><span class="p">)</span><br><br>
+          <span class="c"># Frame 3: zona de tabla</span><br>
+          <span class="v">frame_tabla</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#f3f4f6"</span><br>
+          <span class="p">)</span><br>
+          <span class="v">frame_tabla</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">BOTH</span><span class="p">, </span><span class="v">expand</span><span class="p">=</span><span class="kw">True</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">padx</span><span class="p">=</span><span class="n">30</span><span class="p">, </span><span class="v">pady</span><span class="p">=(</span><span class="n">0</span><span class="p">, </span><span class="n">20</span><span class="p">)</span><br>
+          <span class="p">)</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">fill y expand — ¿qué hacen?</div>
+        <div style="background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.15);border-left:3px solid var(--blue-light);padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:var(--white)">fill=tk.X</strong> — el frame ocupa todo el <strong style="color:var(--white)">ancho</strong> disponible. Usado en el header para que se extienda de borde a borde.
+        </div>
+        <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:var(--white)">fill=tk.BOTH</strong> — el frame ocupa todo el <strong style="color:var(--white)">ancho y alto</strong> disponible. Se usa en la zona de la tabla.
+        </div>
+        <div style="background:rgba(244,169,0,0.06);border:1px solid rgba(244,169,0,0.15);border-left:3px solid var(--amber);padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:var(--white)">expand=True</strong> — permite que el frame <strong style="color:var(--white)">crezca</strong> si la ventana se agranda. Sin esto, la tabla no se estira al redimensionar.
+        </div>
+        <div style="background:rgba(165,180,252,0.06);border:1px solid rgba(165,180,252,0.15);border-left:3px solid #a5b4fc;padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:var(--white)">pady=(0, 20)</strong> — tupla que define margen <strong style="color:var(--white)">arriba=0, abajo=20</strong>. Más preciso que un solo número.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: MESSAGEBOX -->
+  <div class="sec-header"><span class="sec-num">04</span><span class="sec-title">messagebox — diálogos emergentes</span><span class="sec-line"></span></div>
+  <div class="card a-indigo full" style="margin-bottom:16px">
+    <div class="card-desc" style="margin-bottom:14px"><strong>messagebox</strong> es un módulo de tkinter que muestra ventanas emergentes de alerta, confirmación o error. En este proyecto lo usamos para simular funciones aún no implementadas.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--blue-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">showinfo — información</div>
+        <div class="code c-blue" style="margin-bottom:10px;font-size:11px">
+          <span class="kw">from</span><span class="p"> tkinter </span><span class="kw">import</span><span class="p"> messagebox</span><br><br>
+          <span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"Próximamente"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"Aquí se hará el excel"</span><br>
+          <span class="p">)</span>
+        </div>
+        <div class="msg-preview">
+          <div class="msg-title-bar"><div class="msg-icon msg-i-info">i</div>Próximamente</div>
+          <div class="msg-body">Aquí se hará el excel</div>
+          <div class="msg-btns"><button class="msg-btn mb-ok">OK</button></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">showerror — error</div>
+        <div class="code c-red" style="margin-bottom:10px;font-size:11px">
+          <span class="v">messagebox</span><span class="p">.</span><span class="f">showerror</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"Error"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"No se pudo conectar"</span><br>
+          <span class="p">)</span>
+        </div>
+        <div class="msg-preview">
+          <div class="msg-title-bar"><div class="msg-icon msg-i-err">✕</div>Error</div>
+          <div class="msg-body">No se pudo conectar</div>
+          <div class="msg-btns"><button class="msg-btn mb-ok" style="background:#ef4444">OK</button></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">askyesno — confirmación</div>
+        <div class="code c-amber" style="margin-bottom:10px;font-size:11px">
+          <span class="v">respuesta</span><span class="p"> = </span><span class="v">messagebox</span><span class="p">.</span><span class="f">askyesno</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"Confirmar"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;</span><span class="s">"¿Exportar datos?"</span><br>
+          <span class="p">)</span><br>
+          <span class="c"># True si Sí, False si No</span>
+        </div>
+        <div class="msg-preview">
+          <div class="msg-title-bar"><div class="msg-icon msg-i-warn">?</div>Confirmar</div>
+          <div class="msg-body">¿Exportar datos?</div>
+          <div class="msg-btns">
+            <button class="msg-btn mb-ok">Sí</button>
+            <button class="msg-btn mb-cancel">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: TREEVIEW -->
+  <div class="sec-header"><span class="sec-num">05</span><span class="sec-title">Treeview — tabla de datos</span><span class="sec-line"></span></div>
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="card a-indigo">
+      <div class="card-head"><span class="tag t-indigo">Treeview</span><span class="card-title">Crear y configurar la tabla</span></div>
+      <div class="card-desc">Treeview es el widget de <strong>tabla más completo</strong> de tkinter. Se configura en 3 pasos: definir columnas, poner encabezados y ajustar el ancho de cada columna.</div>
+      <div class="code">
+        <span class="c"># 1. Crear con columnas</span><br>
+        <span class="v">tabla</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Treeview</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">frame_tabla</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">columns</span><span class="p">=(</span><span class="s">"ID"</span><span class="p">, </span><span class="s">"Producto"</span><span class="p">, </span><span class="s">"Precio"</span><span class="p">),</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">show</span><span class="p">=</span><span class="s">"headings"</span>  <span class="c"># oculta col vacía</span><br>
+        <span class="p">)</span><br><br>
+        <span class="c"># 2. Definir encabezados</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"ID"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"ID"</span><span class="p">)</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"Producto"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Nombre del Producto"</span><span class="p">)</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"Precio"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Precio (USD)"</span><span class="p">)</span><br><br>
+        <span class="c"># 3. Ajustar columnas</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"ID"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">50</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">CENTER</span><span class="p">)</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"Producto"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">400</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">W</span><span class="p">)</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"Precio"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">150</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">E</span><span class="p">)</span><br>
+        <span class="v">tabla</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">BOTH</span><span class="p">, </span><span class="v">expand</span><span class="p">=</span><span class="kw">True</span><span class="p">)</span>
+      </div>
+    </div>
+    <div class="card a-cyan">
+      <div class="card-head"><span class="tag t-cyan">insert / delete</span><span class="card-title">Insertar y limpiar filas</span></div>
+      <div class="card-desc">Para <strong>cargar datos</strong> se usa <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan)">.insert()</code>. Antes de cargar nuevos datos siempre hay que <strong>limpiar</strong> la tabla con <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan)">.delete()</code> para evitar duplicados.</div>
+      <div class="code c-cyan">
+        <span class="kw">def</span> <span class="f">descargar_dato</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># 1. Limpiar tabla antes de cargar</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="v">fila</span><span class="p">)</span><br><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># 2. Datos de prueba (lista de tuplas)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos</span><span class="p"> = [(</span><span class="n">1</span><span class="p">, </span><span class="s">"Monitor 24'"</span><span class="p">, </span><span class="n">150.50</span><span class="p">),</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p">(</span><span class="n">2</span><span class="p">, </span><span class="s">"Teclado RGB"</span><span class="p">, </span><span class="n">45.00</span><span class="p">)]</span><br><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># 3. Insertar cada fila</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">item</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">datos</span><span class="p">:</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">insert</span><span class="p">(</span><span class="s">""</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">values</span><span class="p">=(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">item</span><span class="p">[</span><span class="n">0</span><span class="p">], </span><span class="v">item</span><span class="p">[</span><span class="n">1</span><span class="p">],</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">f"$</span><span class="p">{</span><span class="v">item</span><span class="p">[</span><span class="n">2</span><span class="p">]</span><span class="s">:.2f}</span><span class="s">"</span>  <span class="c"># formato $</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: TTK.STYLE -->
+  <div class="sec-header"><span class="sec-num">06</span><span class="sec-title">ttk.Style — personalizar apariencia de widgets ttk</span><span class="sec-line"></span></div>
+  <div class="card a-purple full">
+    <div class="card-desc" style="margin-bottom:14px">Los widgets de <strong>ttk</strong> no aceptan <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#c084fc">bg</code> ni <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#c084fc">fg</code> directamente. Su apariencia se controla con <strong>ttk.Style</strong>, que permite cambiar fuente, alto de fila, color de fondo y más.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="code c-purple">
+        <span class="v">estilo</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Style</span><span class="p">()</span><br><br>
+        <span class="c"># Personalizar encabezados</span><br>
+        <span class="v">estilo</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"Treeview.Heading"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">10</span><span class="p">, </span><span class="s">"bold"</span><span class="p">)</span><br>
+        <span class="p">)</span><br><br>
+        <span class="c"># Personalizar filas de la tabla</span><br>
+        <span class="v">estilo</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">"Treeview"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">rowheight</span><span class="p">=</span><span class="n">30</span>  <span class="c"># alto de cada fila</span><br>
+        <span class="p">)</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.15);border-left:3px solid #c084fc;padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:#c084fc">"Treeview.Heading"</strong> — controla el estilo de la fila de encabezados (ID, Producto, Precio)
+        </div>
+        <div style="background:rgba(192,132,252,0.06);border:1px solid rgba(192,132,252,0.15);border-left:3px solid #c084fc;padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:#c084fc">"Treeview"</strong> — controla el estilo de las filas de datos: alto, fuente, colores
+        </div>
+        <div style="background:rgba(255,121,198,0.06);border:1px solid rgba(255,121,198,0.15);border-left:3px solid #ff79c6;padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          <strong style="color:#ff79c6">rowheight=30</strong> — aumenta la altura de cada fila para que el contenido se lea con más comodidad
+        </div>
+        <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+          ⚠ <strong style="color:var(--white)">Style se aplica ANTES</strong> de crear el Treeview para que los cambios tomen efecto correctamente
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 7: CÓDIGO COMPLETO -->
+  <div class="sec-header"><span class="sec-num">07</span><span class="sec-title">Código completo del proyecto — Módulo 1</span><span class="sec-line"></span></div>
+  <div class="card a-indigo full">
+    <div class="card-desc" style="margin-bottom:16px">Este es el código completo de la clase de hoy. Las funciones de Excel y Gráficos usan <strong>messagebox</strong> como marcador temporal — se implementarán en módulos siguientes:</div>
+    <div class="code" style="font-size:11.5px;line-height:1.9">
+      <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br>
+      <span class="kw">from</span><span class="p"> tkinter </span><span class="kw">import</span><span class="p"> messagebox</span><br>
+      <span class="kw">from</span><span class="p"> tkinter </span><span class="kw">import</span><span class="p"> ttk</span><br><br>
+      <span class="c"># ── FUNCIONES ──────────────────────────────</span><br>
+      <span class="kw">def</span> <span class="f">descargar_dato</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Limpiar filas existentes</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">fila</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">tabla</span><span class="p">.</span><span class="f">get_children</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="v">fila</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c"># Datos de prueba (simulan una API)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">datos_prueba</span><span class="p"> = [</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span class="n">1</span><span class="p">, </span><span class="s">"Monitor Curvo 24'"</span><span class="p">, </span><span class="n">150.50</span><span class="p">),</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span class="n">2</span><span class="p">, </span><span class="s">"Teclado Mecánico RGB"</span><span class="p">, </span><span class="n">45.00</span><span class="p">),</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(</span><span class="n">3</span><span class="p">, </span><span class="s">"Silla Ergonómica Ejecutiva"</span><span class="p">, </span><span class="n">120.99</span><span class="p">)</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;]</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">for</span><span class="p"> </span><span class="v">item</span><span class="p"> </span><span class="kw">in</span><span class="p"> </span><span class="v">datos_prueba</span><span class="p">:</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">tabla</span><span class="p">.</span><span class="f">insert</span><span class="p">(</span><span class="s">""</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">, </span><span class="v">values</span><span class="p">=(</span><span class="v">item</span><span class="p">[</span><span class="n">0</span><span class="p">], </span><span class="v">item</span><span class="p">[</span><span class="n">1</span><span class="p">], </span><span class="s">f"$</span><span class="p">{</span><span class="v">item</span><span class="p">[</span><span class="n">2</span><span class="p">]</span><span class="s">:.2f}</span><span class="s">"</span><span class="p">))</span><br><br>
+      <span class="kw">def</span> <span class="f">exportar_excel</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><span class="s">"Próximamente"</span><span class="p">, </span><span class="s">"Aquí se hará el excel"</span><span class="p">)</span><br><br>
+      <span class="kw">def</span> <span class="f">mostrar_graficos</span><span class="p">():</span><br>
+      <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">messagebox</span><span class="p">.</span><span class="f">showinfo</span><span class="p">(</span><span class="s">"Próximamente"</span><span class="p">, </span><span class="s">"Aquí se verán los gráficos"</span><span class="p">)</span><br><br>
+      <span class="c"># ── VENTANA ────────────────────────────────</span><br>
+      <span class="v">ventana</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Tk</span><span class="p">()</span><br>
+      <span class="v">ventana</span><span class="p">.</span><span class="f">title</span><span class="p">(</span><span class="s">"Dashboard Analítico"</span><span class="p">)</span><br>
+      <span class="v">ventana</span><span class="p">.</span><span class="f">geometry</span><span class="p">(</span><span class="s">"900x550"</span><span class="p">)</span><br>
+      <span class="v">ventana</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><span class="v">bg</span><span class="p">=</span><span class="s">"#f3f4f6"</span><span class="p">)</span><br><br>
+      <span class="c"># ── HEADER ─────────────────────────────────</span><br>
+      <span class="v">frame_header</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#ffffff"</span><span class="p">, </span><span class="v">pady</span><span class="p">=</span><span class="n">15</span><span class="p">)</span><br>
+      <span class="v">frame_header</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">X</span><span class="p">)</span><br>
+      <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">frame_header</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Analizador de Mercado"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">20</span><span class="p">, </span><span class="s">"bold"</span><span class="p">), </span><span class="v">bg</span><span class="p">=</span><span class="s">"#ffffff"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"#1e293b"</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br>
+      <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">frame_header</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Módulo 1: Interfaz Visual"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">11</span><span class="p">), </span><span class="v">bg</span><span class="p">=</span><span class="s">"#ffffff"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"#64748b"</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br><br>
+      <span class="c"># ── BOTONES ────────────────────────────────</span><br>
+      <span class="v">frame_controles</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#f3f4f6"</span><span class="p">)</span><br>
+      <span class="v">frame_controles</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">20</span><span class="p">)</span><br>
+      <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">frame_controles</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"☁️ Descargar (API)"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">descargar_dato</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#0284c7"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">10</span><span class="p">, </span><span class="s">"bold"</span><span class="p">), </span><span class="v">width</span><span class="p">=</span><span class="n">20</span><span class="p">).</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">column</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+      <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">frame_controles</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"📊 Exportar Excel"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">exportar_excel</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#10b981"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">10</span><span class="p">, </span><span class="s">"bold"</span><span class="p">), </span><span class="v">width</span><span class="p">=</span><span class="n">20</span><span class="p">).</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">column</span><span class="p">=</span><span class="n">1</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+      <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">frame_controles</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"📈 Ver Gráfica"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">mostrar_graficos</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#8b5cf6"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">10</span><span class="p">, </span><span class="s">"bold"</span><span class="p">), </span><span class="v">width</span><span class="p">=</span><span class="n">20</span><span class="p">).</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">column</span><span class="p">=</span><span class="n">2</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br><br>
+      <span class="c"># ── TABLA ──────────────────────────────────</span><br>
+      <span class="v">frame_tabla</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Frame</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">bg</span><span class="p">=</span><span class="s">"#f3f4f6"</span><span class="p">)</span><br>
+      <span class="v">frame_tabla</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">BOTH</span><span class="p">, </span><span class="v">expand</span><span class="p">=</span><span class="kw">True</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">30</span><span class="p">, </span><span class="v">pady</span><span class="p">=(</span><span class="n">0</span><span class="p">, </span><span class="n">20</span><span class="p">))</span><br>
+      <span class="v">estilo</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Style</span><span class="p">()</span><br>
+      <span class="v">estilo</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><span class="s">"Treeview.Heading"</span><span class="p">, </span><span class="v">font</span><span class="p">=(</span><span class="s">"Segoe UI"</span><span class="p">, </span><span class="n">10</span><span class="p">, </span><span class="s">"bold"</span><span class="p">))</span><br>
+      <span class="v">estilo</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><span class="s">"Treeview"</span><span class="p">, </span><span class="v">rowheight</span><span class="p">=</span><span class="n">30</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p"> = </span><span class="v">ttk</span><span class="p">.</span><span class="f">Treeview</span><span class="p">(</span><span class="v">frame_tabla</span><span class="p">, </span><span class="v">columns</span><span class="p">=(</span><span class="s">"ID"</span><span class="p">, </span><span class="s">"Producto"</span><span class="p">, </span><span class="s">"Precio"</span><span class="p">), </span><span class="v">show</span><span class="p">=</span><span class="s">"headings"</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"ID"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"ID"</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"Producto"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Nombre del Producto"</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">heading</span><span class="p">(</span><span class="s">"Precio"</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Precio (USD)"</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"ID"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">50</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">CENTER</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"Producto"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">400</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">W</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">column</span><span class="p">(</span><span class="s">"Precio"</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">150</span><span class="p">, </span><span class="v">anchor</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">E</span><span class="p">)</span><br>
+      <span class="v">tabla</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="v">tk</span><span class="p">.</span><span class="v">BOTH</span><span class="p">, </span><span class="v">expand</span><span class="p">=</span><span class="kw">True</span><span class="p">)</span><br><br>
+      <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 8: TIPS -->
+  <div class="sec-header"><span class="sec-num">08</span><span class="sec-title">Tips y Buenas Prácticas</span><span class="sec-line"></span></div>
+  <div class="tips-grid">
+    <div class="tip">
+      <div class="tip-t">Funciones antes de la ventana</div>
+      <div class="tip-d">Define siempre las funciones <strong>al inicio</strong>, antes de crear widgets. Si el botón llama a <code>descargar_dato</code> y aún no está definida, Python lanza un error.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">Limpiar antes de insertar</div>
+      <div class="tip-d">Siempre usa <code>tabla.get_children()</code> + <code>tabla.delete()</code> antes de cargar nuevos datos. Sin esto los datos anteriores se acumulan con cada clic.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">f-string para formatear precio</div>
+      <div class="tip-d"><code>f"${item[2]:.2f}"</code> formatea el número con exactamente 2 decimales. Sin esto, 45.0 se mostraría como <code>45.0</code> en vez de <code>$45.00</code>.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">messagebox como marcador</div>
+      <div class="tip-d">Usar <code>messagebox.showinfo("Próximamente", "...")</code> en funciones no implementadas es una buena práctica — la app funciona sin errores mientras desarrollas por partes.</div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="resumen">
+    <div class="res-label">Resumen</div>
+    <div class="res-grid">
+      <div class="ri"><span class="ri-dot"></span>ttk extiende tkinter con widgets más modernos como Treeview y Style</div>
+      <div class="ri"><span class="ri-dot"></span>Frame organiza la ventana en zonas independientes y manejables</div>
+      <div class="ri"><span class="ri-dot"></span>fill=X ocupa el ancho · fill=BOTH ocupa ancho y alto · expand=True crece</div>
+      <div class="ri"><span class="ri-dot"></span>Treeview necesita: columns → heading → column → insert para funcionar</div>
+      <div class="ri"><span class="ri-dot"></span>ttk.Style controla apariencia de widgets ttk (no bg/fg directamente)</div>
+      <div class="ri"><span class="ri-dot"></span>messagebox permite simular funciones pendientes sin romper la app</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left"><b>TAVIID</b> LABS · Programación Python · Módulo 07</div>
+  <div class="footer-right">&lt;/&gt; Dev: Deyvid Torrez</div>
+</div>
+
+</body>
+</html>
