@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Módulo 06 — Interfaz Gráfica con Tkinter · TAVIID</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#050e1a;--navy2:#0a1a2e;--navy3:#0f2444;--blue:#1a73e8;--blue-light:#4a9eff;--cyan:#00c9b8;--amber:#f4a900;--green:#00c17a;--red:#e03030;--teal:#0d9488;--white:#f0f6ff;--muted:#7a9ab8;--border:rgba(255,255,255,0.07);--code-bg:#0a1220}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+.topbar{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.taviid-brand{display:flex;align-items:center;gap:10px}
+.taviid-pill{background:#cc0000;color:#fff;font-size:13px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}
+.taviid-ing{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
+.dev-label{font-size:12px;color:var(--muted);font-weight:500}
+.dev-label span{color:var(--amber);font-weight:700}
+
+.mod-banner{background:linear-gradient(135deg,#0d9488 0%,var(--navy3) 60%);padding:32px 40px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.mod-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.mod-banner::after{content:'';position:absolute;right:80px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.mod-number{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:rgba(255,255,255,0.12);line-height:1;letter-spacing:-4px;user-select:none}
+.mod-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.mod-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.mod-dot{display:inline-block;width:6px;height:6px;background:var(--cyan);border-radius:50%;margin-right:8px;vertical-align:middle}
+
+.hero{padding:48px 40px 32px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(13,148,136,0.14) 0%,transparent 70%)}
+.hero-title{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1.1;margin-bottom:12px}
+.hero-title .te{color:#2dd4bf}
+.hero-title .cy{color:var(--cyan)}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:500;max-width:540px;margin:0 auto 20px}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-pill{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:5px 14px;border-radius:2px;border:1px solid;background:rgba(13,148,136,0.1);color:#2dd4bf;border-color:rgba(45,212,191,0.3)}
+
+.page{padding:0 40px 60px}
+
+.sec-header{display:flex;align-items:center;gap:12px;margin:40px 0 20px}
+.sec-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#2dd4bf;letter-spacing:2px;background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);padding:4px 10px;border-radius:2px;text-transform:uppercase}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+.card{background:var(--navy2);border:1px solid var(--border);border-top:2px solid transparent;padding:20px;border-radius:2px;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card.a-teal{border-top-color:#2dd4bf}
+.card.a-blue{border-top-color:var(--blue-light)}
+.card.a-cyan{border-top-color:var(--cyan)}
+.card.a-green{border-top-color:var(--green)}
+.card.a-amber{border-top-color:var(--amber)}
+.card.a-red{border-top-color:var(--red)}
+.card.a-purple{border-top-color:#c084fc}
+
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:700;padding:3px 9px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.t-teal{background:rgba(45,212,191,0.15);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3)}
+.t-blue{background:rgba(74,158,255,0.15);color:var(--blue-light);border:1px solid rgba(74,158,255,0.3)}
+.t-cyan{background:rgba(0,201,184,0.15);color:var(--cyan);border:1px solid rgba(0,201,184,0.3)}
+.t-green{background:rgba(0,193,122,0.15);color:var(--green);border:1px solid rgba(0,193,122,0.3)}
+.t-amber{background:rgba(244,169,0,0.15);color:var(--amber);border:1px solid rgba(244,169,0,0.3)}
+.t-red{background:rgba(224,48,48,0.15);color:#ff6b6b;border:1px solid rgba(224,48,48,0.3)}
+.t-purple{background:rgba(192,132,252,0.15);color:#c084fc;border:1px solid rgba(192,132,252,0.3)}
+
+.card-title{font-size:14px;font-weight:700;color:var(--white)}
+.card-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.card-desc strong{color:var(--white);font-weight:600}
+
+.code{background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);border-left:3px solid #2dd4bf;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;border-radius:0 2px 2px 0;overflow-x:auto}
+.code.c-blue{border-left-color:var(--blue-light)}
+.code.c-green{border-left-color:var(--green)}
+.code.c-amber{border-left-color:var(--amber)}
+.code.c-red{border-left-color:var(--red)}
+.code.c-purple{border-left-color:#c084fc}
+.kw{color:#ff79c6}.s{color:#f1fa8c}.n{color:#bd93f9}.c{color:#3d5a73;font-style:italic}.v{color:#8be9fd}.f{color:#50fa7b}.p{color:#f8f8f2}
+
+/* WIDGET SHOWCASE */
+.widget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.widget-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-top:2px solid #2dd4bf;padding:14px;border-radius:2px}
+.widget-icon{font-size:22px;margin-bottom:8px}
+.widget-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#2dd4bf;margin-bottom:4px}
+.widget-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* APP PREVIEW */
+.app-preview{background:#1a1a2a;border:1px solid rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.app-titlebar{background:#2d2d3f;padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.app-dot{width:10px;height:10px;border-radius:50%}
+.dot-red{background:#ff5f57}.dot-yellow{background:#febc2e}.dot-green{background:#28c840}
+.app-title{font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px;font-weight:600}
+.app-body{padding:20px;display:flex;flex-direction:column;gap:10px}
+.app-label{font-size:12px;color:#ccc;font-family:'Space Grotesk',sans-serif}
+.app-entry{background:#fff;border:2px solid #888;padding:5px 10px;font-size:12px;color:#333;font-family:'Space Grotesk',sans-serif;border-radius:2px;width:180px}
+.app-btn{background:#0078d4;color:white;border:none;padding:6px 16px;font-size:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;border-radius:2px;width:fit-content}
+.app-output{background:#0a0a1a;border:1px solid #333;padding:8px 12px;font-size:11px;color:#2dd4bf;font-family:'JetBrains Mono',monospace;min-height:32px;border-radius:2px}
+
+/* TABLA WIDGETS */
+.widget-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.widget-table th{background:rgba(13,148,136,0.3);color:#2dd4bf;font-weight:700;padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.widget-table th:first-child{border-radius:2px 0 0 0}.widget-table th:last-child{border-radius:0 2px 0 0}
+.widget-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;vertical-align:middle;line-height:1.5}
+.widget-table tr:hover td{background:rgba(255,255,255,0.02);color:var(--white)}
+.widget-table tr:last-child td{border-bottom:none}
+.lc{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(45,212,191,0.12);color:#2dd4bf;padding:2px 7px;border-radius:2px;display:inline-block;margin:1px}
+
+/* GEOMETRY */
+.geo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.geo-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);padding:14px;border-radius:2px}
+.geo-name{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#2dd4bf;margin-bottom:6px}
+.geo-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tip{background:var(--navy2);border:1px solid var(--border);border-left:3px solid #0d9488;padding:14px 16px;border-radius:0 2px 2px 0;transition:border-color .2s}
+.tip:hover{border-left-color:var(--cyan)}
+.tip-t{font-size:10px;font-weight:700;color:#2dd4bf;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.tip-d{font-size:12px;color:var(--muted);line-height:1.6}
+.tip-d code{font-family:'JetBrains Mono',monospace;background:rgba(45,212,191,0.1);color:#2dd4bf;padding:1px 6px;border-radius:2px;font-size:11px}
+
+/* RESUMEN */
+.resumen{margin-top:40px;background:var(--navy2);border:1px solid var(--border);border-top:2px solid #2dd4bf;border-radius:2px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.res-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:#2dd4bf;letter-spacing:3px;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);border-right:1px solid rgba(45,212,191,0.2);padding-right:16px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:flex-start;gap:8px;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:2px}
+.ri-dot{width:5px;height:5px;background:#2dd4bf;border-radius:50%;flex-shrink:0;margin-top:6px}
+
+.footer{background:var(--navy2);border-top:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;margin-top:48px}
+.footer-left{font-size:11px;color:var(--muted);font-weight:500}
+.footer-left b{color:#cc0000}
+.footer-right{font-size:11px;color:var(--muted)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp .5s ease both}
+
+/* ✅ NUEVO — Responsive: tablet (≤900px) */
+@media (max-width:900px){
+  .widget-grid{grid-template-columns:1fr 1fr}
+  .geo-grid{grid-template-columns:1fr}
+}
+
+/* ✅ NUEVO — Responsive: celular (≤640px) */
+@media (max-width:640px){
+  /* Paddings laterales grandes que causaban desborde horizontal en celular */
+  .topbar{padding:0 16px}
+  .mod-banner{padding:24px 16px;gap:14px}
+  .hero{padding:32px 16px 24px}
+  .page{padding:0 16px 40px}
+  .footer{padding:14px 16px;flex-direction:column;gap:6px;text-align:center}
+
+  /* Número gigante del banner y títulos: bajamos tamaño para que no empujen el layout */
+  .mod-number{font-size:48px}
+  .mod-title{font-size:18px}
+  .hero-title{font-size:26px}
+  .hero-sub{font-size:13.5px}
+  .hero-pills{gap:6px}
+  .hero-pill{font-size:10.5px;padding:4px 9px}
+
+  /* Todas las grillas de 2, 3 y 4 columnas (clases y estilos inline) pasan a 1 columna */
+  .grid2,.grid3,.widget-grid,.geo-grid,.tips-grid,
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns:1fr auto"]{grid-template-columns:1fr!important}
+
+  /* La tabla de widgets no tenía contenedor con scroll — se la agregamos para que no desborde la página */
+  .widget-table{display:block;overflow-x:auto;white-space:nowrap}
+  .widget-table thead,.widget-table tbody,.widget-table tr{display:table;width:100%;table-layout:fixed}
+
+  /* Vista previa de la app (simulación de ventana de escritorio): el Entry tenía ancho fijo de 180px */
+  .app-entry{width:auto;flex:1}
+  .app-preview{max-width:100%}
+
+  /* Vista previa del ejercicio integrador tenía min-width:220px — lo liberamos para que no desborde */
+  [style*="min-width:220px"]{min-width:0!important;width:100%}
+
+  /* Bloques PASO 1/2/3: el panel de código tenía borde derecho para separarse del panel de explicación
+     al estar lado a lado. Al apilarse en columna, ese borde debe pasar a la parte inferior */
+  [style*="border-right:1px solid rgba(255,255,255,0.06)"]{border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.06)!important}
+
+  /* Encabezados de cada PASO: el texto descriptivo con margin-left:auto no cabe junto al resto en celular */
+  .card.full > div[style*="border-bottom:1px solid rgba(45,212,191,0.15)"],
+  .card.full > div[style*="border-bottom:1px solid rgba(74,158,255,0.15)"],
+  .card.full > div[style*="border-bottom:1px solid rgba(196,132,252,0.15)"]{flex-wrap:wrap;row-gap:4px}
+  [style*="margin-left:auto"]{margin-left:0!important;width:100%}
+
+  /* Bloques de código: reducir un poco para que entren más caracteres antes de hacer scroll */
+  .code,.kw-code{font-size:11px;padding:12px 14px}
+
+  /* El bloque "Resumen" usaba writing-mode vertical, que no cabe en celular */
+  .resumen{grid-template-columns:1fr;padding:20px 16px;gap:14px}
+  .res-label{writing-mode:horizontal-tb;transform:none;border-right:none;border-bottom:1px solid rgba(45,212,191,0.2);padding-right:0;padding-bottom:10px;text-align:left}
+  .res-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="taviid-brand">
+    <div class="taviid-pill">TAVIID</div>
+    <div class="taviid-ing">Labs</div>
+  </div>
+  <div class="dev-label">&lt;/&gt; Dev: <span>Deyvid Torrez</span></div>
+</div>
+
+<div class="mod-banner">
+  <div class="mod-number">06</div>
+  <div>
+    <div class="mod-eyebrow">Python desde cero</div>
+    <div class="mod-title"><span class="mod-dot"></span>Interfaz Gráfica con Tkinter</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title"><span class="te">Tkinter</span> — <span class="cy">GUI con Python</span></div>
+  <div class="hero-sub">Crea ventanas, botones, formularios y aplicaciones de escritorio directamente desde Python</div>
+  <div class="hero-pills">
+    <span class="hero-pill">Tk()</span>
+    <span class="hero-pill">Label</span>
+    <span class="hero-pill">Button</span>
+    <span class="hero-pill">Entry</span>
+    <span class="hero-pill">pack()</span>
+    <span class="hero-pill">grid()</span>
+    <span class="hero-pill">command</span>
+    <span class="hero-pill">mainloop()</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- SECCIÓN 1: ¿QUÉ ES TKINTER? -->
+  <div class="sec-header"><span class="sec-num">01</span><span class="sec-title">¿Qué es Tkinter?</span><span class="sec-line"></span></div>
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="card a-teal">
+      <div class="card-head"><span class="tag t-teal">tkinter</span><span class="card-title">Librería de interfaces gráficas</span></div>
+      <div class="card-desc">Tkinter es la librería <strong>incluida en Python</strong> para crear interfaces gráficas (GUI). No necesita instalación adicional. Permite crear ventanas, botones, campos de texto y más.</div>
+      <div class="code">
+        <span class="c"># Importar tkinter</span><br>
+        <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br><br>
+        <span class="c"># Crear la ventana principal</span><br>
+        <span class="v">ventana</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Tk</span><span class="p">()</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">title</span><span class="p">(</span><span class="s">"Mi primera app"</span><span class="p">)</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">geometry</span><span class="p">(</span><span class="s">"400x300"</span><span class="p">)</span><br><br>
+        <span class="c"># Iniciar el bucle principal</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+      </div>
+    </div>
+    <div class="card a-blue">
+      <div class="card-head"><span class="tag t-blue">Estructura</span><span class="card-title">Partes de una app Tkinter</span></div>
+      <div class="card-desc">Toda aplicación Tkinter sigue <strong>3 pasos</strong> fundamentales que siempre se repiten:</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid #2dd4bf;padding:10px 14px;border-radius:0 2px 2px 0">
+          <div style="font-size:10px;font-weight:800;color:#2dd4bf;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">1 · Crear ventana</div>
+          <div style="font-size:12px;color:var(--muted)">Instanciar <span style="font-family:'JetBrains Mono',monospace;color:#2dd4bf;font-size:11px">tk.Tk()</span> y configurar título y tamaño</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--blue-light);padding:10px 14px;border-radius:0 2px 2px 0">
+          <div style="font-size:10px;font-weight:800;color:var(--blue-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">2 · Agregar widgets</div>
+          <div style="font-size:12px;color:var(--muted)">Labels, Buttons, Entries, etc. Configurar y posicionar cada uno</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--green);padding:10px 14px;border-radius:0 2px 2px 0">
+          <div style="font-size:10px;font-weight:800;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">3 · mainloop()</div>
+          <div style="font-size:12px;color:var(--muted)">Inicia el bucle de eventos. Mantiene la ventana abierta y escucha interacciones</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: WIDGETS PRINCIPALES -->
+  <div class="sec-header"><span class="sec-num">02</span><span class="sec-title">Widgets principales</span><span class="sec-line"></span></div>
+  <div class="card a-teal full" style="margin-bottom:16px">
+    <div class="card-desc" style="margin-bottom:14px">Un <strong>widget</strong> es cada elemento visual de la interfaz. Tkinter incluye todos los esenciales:</div>
+    <table class="widget-table">
+      <thead><tr><th>Widget</th><th>Clase</th><th>¿Para qué sirve?</th><th>Ejemplo rápido</th></tr></thead>
+      <tbody>
+        <tr><td>🏷️ Etiqueta</td><td><span class="lc">Label</span></td><td>Mostrar texto o imágenes estáticas</td><td><span class="lc">tk.Label(ventana, text="Hola")</span></td></tr>
+        <tr><td>🔘 Botón</td><td><span class="lc">Button</span></td><td>Ejecutar una acción al hacer clic</td><td><span class="lc">tk.Button(ventana, text="OK")</span></td></tr>
+        <tr><td>📝 Campo de texto</td><td><span class="lc">Entry</span></td><td>Entrada de texto de una sola línea</td><td><span class="lc">tk.Entry(ventana)</span></td></tr>
+        <tr><td>📄 Área de texto</td><td><span class="lc">Text</span></td><td>Entrada de texto multilínea</td><td><span class="lc">tk.Text(ventana, height=5)</span></td></tr>
+        <tr><td>☑️ Casilla</td><td><span class="lc">Checkbutton</span></td><td>Opciones que se pueden activar/desactivar</td><td><span class="lc">tk.Checkbutton(ventana, text="Activo")</span></td></tr>
+        <tr><td>🔘 Radio</td><td><span class="lc">Radiobutton</span></td><td>Selección única entre varias opciones</td><td><span class="lc">tk.Radiobutton(ventana, text="Opción")</span></td></tr>
+        <tr><td>📦 Frame</td><td><span class="lc">Frame</span></td><td>Contenedor para agrupar widgets</td><td><span class="lc">tk.Frame(ventana)</span></td></tr>
+        <tr><td>📋 Lista</td><td><span class="lc">Listbox</span></td><td>Lista de opciones seleccionables</td><td><span class="lc">tk.Listbox(ventana)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECCIÓN 3: LABEL Y BUTTON -->
+  <div class="sec-header"><span class="sec-num">03</span><span class="sec-title">Label y Button — mostrar y actuar</span><span class="sec-line"></span></div>
+  <div class="grid2">
+    <div class="card a-teal">
+      <div class="card-head"><span class="tag t-teal">Label</span><span class="card-title">Mostrar texto</span></div>
+      <div class="card-desc">Muestra texto estático o dinámico. Se puede actualizar con <strong>.config()</strong> para cambiar el contenido en tiempo real.</div>
+      <div class="code">
+        <span class="v">etiqueta</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">ventana</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Bienvenido"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Arial"</span><span class="p">, </span><span class="n">14</span><span class="p">, </span><span class="s">"bold"</span><span class="p">),</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">fg</span><span class="p">=</span><span class="s">"#2dd4bf"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">bg</span><span class="p">=</span><span class="s">"white"</span><br>
+        <span class="p">)</span><br>
+        <span class="v">etiqueta</span><span class="p">.</span><span class="f">pack</span><span class="p">()</span><br><br>
+        <span class="c"># Actualizar texto dinámicamente</span><br>
+        <span class="v">etiqueta</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><span class="v">text</span><span class="p">=</span><span class="s">"¡Hola!"</span><span class="p">)</span>
+      </div>
+    </div>
+    <div class="card a-blue">
+      <div class="card-head"><span class="tag t-blue">Button</span><span class="card-title">Ejecutar acciones</span></div>
+      <div class="card-desc">El parámetro <strong>command</strong> recibe una función que se ejecutará al hacer clic. No lleves paréntesis al nombre de la función.</div>
+      <div class="code c-blue">
+        <span class="kw">def</span> <span class="f">al_hacer_clic</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="s">"¡Botón presionado!"</span><span class="p">)</span><br><br>
+        <span class="v">boton</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">ventana</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Presióname"</span><span class="p">,</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">command</span><span class="p">=</span><span class="f">al_hacer_clic</span>  <span class="c"># sin ()</span><br>
+        <span class="p">)</span><br>
+        <span class="v">boton</span><span class="p">.</span><span class="f">pack</span><span class="p">()</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: ENTRY Y LECTURA -->
+  <div class="sec-header"><span class="sec-num">04</span><span class="sec-title">Entry — capturar datos del usuario</span><span class="sec-line"></span></div>
+  <div class="grid2">
+    <div class="card a-green">
+      <div class="card-head"><span class="tag t-green">Entry</span><span class="card-title">Campo de texto</span></div>
+      <div class="card-desc">Permite al usuario <strong>escribir texto</strong>. Para leer su contenido se usa <strong>.get()</strong> y para borrarlo <strong>.delete(0, END)</strong>.</div>
+      <div class="code c-green">
+        <span class="v">campo</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Entry</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">width</span><span class="p">=</span><span class="n">30</span><span class="p">)</span><br>
+        <span class="v">campo</span><span class="p">.</span><span class="f">pack</span><span class="p">()</span><br><br>
+        <span class="kw">def</span> <span class="f">leer</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">texto</span><span class="p"> = </span><span class="v">campo</span><span class="p">.</span><span class="f">get</span><span class="p">()</span>        <span class="c"># leer</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="s">f"Ingresaste: </span><span class="p">{</span><span class="v">texto</span><span class="p">}</span><span class="s">"</span><span class="p">)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">campo</span><span class="p">.</span><span class="f">delete</span><span class="p">(</span><span class="n">0</span><span class="p">, </span><span class="v">tk</span><span class="p">.</span><span class="v">END</span><span class="p">)</span>  <span class="c"># borrar</span>
+      </div>
+    </div>
+    <div class="card a-amber">
+      <div class="card-head"><span class="tag t-amber">StringVar</span><span class="card-title">Variable enlazada</span></div>
+      <div class="card-desc"><strong>StringVar</strong> es una variable especial de Tkinter que se <strong>sincroniza automáticamente</strong> con un widget. Cuando cambia la variable, el widget se actualiza solo.</div>
+      <div class="code c-amber">
+        <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br>
+        <span class="v">ventana</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Tk</span><span class="p">()</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">title</span><span class="p">(</span><span class="s">"StringVar demo"</span><span class="p">)</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">geometry</span><span class="p">(</span><span class="s">"400x200"</span><span class="p">)</span><br><br>
+        <span class="v">nombre_var</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">StringVar</span><span class="p">()</span><br>
+        <span class="v">campo</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Entry</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">textvariable</span><span class="p">=</span><span class="v">nombre_var</span><span class="p">)</span><br>
+        <span class="v">campo</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br><br>
+        <span class="kw">def</span> <span class="f">leer</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">valor</span><span class="p"> = </span><span class="v">nombre_var</span><span class="p">.</span><span class="f">get</span><span class="p">()</span>  <span class="c"># lee lo escrito</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="s">"Escribiste:"</span><span class="p">, </span><span class="v">valor</span><span class="p">)</span><br><br>
+        <span class="kw">def</span> <span class="f">poner</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre_var</span><span class="p">.</span><span class="f">set</span><span class="p">(</span><span class="s">"Luis"</span><span class="p">)</span>  <span class="c"># rellena el campo</span><br><br>
+        <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Leer"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">leer</span><span class="p">).</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">5</span><span class="p">)</span><br>
+        <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Poner Luis"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">poner</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: MANEJO DE EVENTOS -->
+  <div class="sec-header"><span class="sec-num">05</span><span class="sec-title">Manejo de Eventos</span><span class="sec-line"></span></div>
+  <div class="card a-teal full" style="margin-bottom:16px">
+    <div class="card-desc" style="margin-bottom:14px">Un <strong>evento</strong> es cualquier acción del usuario: clic, tecla, movimiento del mouse. Se capturan con <strong>.bind()</strong> o el parámetro <strong>command</strong>.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#2dd4bf;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Eventos comunes con .bind()</div>
+        <div class="code">
+          <span class="c"># Clic izquierdo del mouse</span><br>
+          <span class="v">widget</span><span class="p">.</span><span class="f">bind</span><span class="p">(</span><span class="s">"&lt;Button-1&gt;"</span><span class="p">, </span><span class="v">funcion</span><span class="p">)</span><br><br>
+          <span class="c"># Presionar una tecla</span><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">bind</span><span class="p">(</span><span class="s">"&lt;Key&gt;"</span><span class="p">, </span><span class="v">funcion</span><span class="p">)</span><br><br>
+          <span class="c"># Tecla Enter</span><br>
+          <span class="v">campo</span><span class="p">.</span><span class="f">bind</span><span class="p">(</span><span class="s">"&lt;Return&gt;"</span><span class="p">, </span><span class="v">funcion</span><span class="p">)</span><br><br>
+          <span class="c"># Mouse sobre el widget</span><br>
+          <span class="v">boton</span><span class="p">.</span><span class="f">bind</span><span class="p">(</span><span class="s">"&lt;Enter&gt;"</span><span class="p">, </span><span class="v">funcion</span><span class="p">)</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#2dd4bf;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Función manejadora de evento</div>
+        <div class="code">
+          <span class="c"># Las funciones de evento reciben</span><br>
+          <span class="c"># un parámetro "event" automático</span><br>
+          <span class="kw">def</span> <span class="f">al_presionar</span><span class="p">(</span><span class="v">event</span><span class="p">):</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="s">f"Tecla: </span><span class="p">{</span><span class="v">event</span><span class="p">.</span><span class="v">char</span><span class="p">}</span><span class="s">"</span><span class="p">)</span><br><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">bind</span><span class="p">(</span><span class="s">"&lt;Key&gt;"</span><span class="p">, </span><span class="f">al_presionar</span><span class="p">)</span><br><br>
+          <span class="c"># command no recibe event:</span><br>
+          <span class="kw">def</span> <span class="f">simple</span><span class="p">():</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f">print</span><span class="p">(</span><span class="s">"clic!"</span><span class="p">)</span><br>
+          <span class="v">boton</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">command</span><span class="p">=</span><span class="f">simple</span><span class="p">)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: GEOMETRÍA -->
+  <div class="sec-header"><span class="sec-num">06</span><span class="sec-title">Gestores de geometría — pack, grid, place</span><span class="sec-line"></span></div>
+  <div class="geo-grid">
+    <div class="geo-card">
+      <div class="geo-name">pack()</div>
+      <div class="geo-desc"><strong>El más simple.</strong> Apila widgets uno tras otro. Usa <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2dd4bf">side</span> para elegir dirección: TOP, BOTTOM, LEFT, RIGHT.</div>
+      <div class="code" style="font-size:11px">
+        <span class="v">lbl</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">side</span><span class="p">=</span><span class="s">"top"</span><span class="p">)</span><br>
+        <span class="v">btn</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+        <span class="v">ent</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">fill</span><span class="p">=</span><span class="s">"x"</span><span class="p">)</span>
+      </div>
+    </div>
+    <div class="geo-card">
+      <div class="geo-name">grid()</div>
+      <div class="geo-desc"><strong>El más preciso.</strong> Organiza en filas y columnas como una tabla. Ideal para formularios.</div>
+      <div class="code" style="font-size:11px">
+        <span class="v">lbl</span><span class="p">.</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">col</span><span class="p">=</span><span class="n">0</span><span class="p">)</span><br>
+        <span class="v">ent</span><span class="p">.</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">col</span><span class="p">=</span><span class="n">1</span><span class="p">)</span><br>
+        <span class="v">btn</span><span class="p">.</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">1</span><span class="p">, </span><span class="v">columnspan</span><span class="p">=</span><span class="n">2</span><span class="p">)</span>
+      </div>
+    </div>
+    <div class="geo-card">
+      <div class="geo-name">place()</div>
+      <div class="geo-desc"><strong>El más manual.</strong> Posiciona por coordenadas x, y exactas. Útil para diseños muy específicos.</div>
+      <div class="code" style="font-size:11px">
+        <span class="v">lbl</span><span class="p">.</span><span class="f">place</span><span class="p">(</span><span class="v">x</span><span class="p">=</span><span class="n">20</span><span class="p">, </span><span class="v">y</span><span class="p">=</span><span class="n">30</span><span class="p">)</span><br>
+        <span class="v">btn</span><span class="p">.</span><span class="f">place</span><span class="p">(</span><span class="v">x</span><span class="p">=</span><span class="n">100</span><span class="p">, </span><span class="v">y</span><span class="p">=</span><span class="n">80</span><span class="p">)</span><br>
+        <span class="c"># No mezclar con pack/grid</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 7: EJERCICIO INTEGRADOR -->
+  <div class="sec-header"><span class="sec-num">07</span><span class="sec-title">Ejercicio integrador — App de saludo</span><span class="sec-line"></span></div>
+  <div class="card a-teal full">
+    <div class="card-desc" style="margin-bottom:16px">App completa que combina <strong>Label + Entry + Button + evento + grid</strong>. El usuario escribe su nombre y al presionar el botón aparece un saludo personalizado:</div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start">
+      <div class="code" style="flex:1">
+        <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br><br>
+        <span class="kw">def</span> <span class="f">saludar</span><span class="p">():</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre</span><span class="p"> = </span><span class="v">campo_nombre</span><span class="p">.</span><span class="f">get</span><span class="p">()</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">if</span><span class="p"> </span><span class="v">nombre</span><span class="p">:</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">lbl_resultado</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">f"¡Hola, </span><span class="p">{</span><span class="v">nombre</span><span class="p">}</span><span class="s">!"</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">else</span><span class="p">:</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">lbl_resultado</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Escribe tu nombre"</span><br>
+        <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</span><br><br>
+        <span class="v">ventana</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Tk</span><span class="p">()</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">title</span><span class="p">(</span><span class="s">"App Saludo"</span><span class="p">)</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">geometry</span><span class="p">(</span><span class="s">"300x150"</span><span class="p">)</span><br><br>
+        <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Nombre:"</span><span class="p">).</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">column</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">10</span><span class="p">, </span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+        <span class="v">campo_nombre</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Entry</span><span class="p">(</span><span class="v">ventana</span><span class="p">)</span><br>
+        <span class="v">campo_nombre</span><span class="p">.</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">0</span><span class="p">, </span><span class="v">column</span><span class="p">=</span><span class="n">1</span><span class="p">, </span><span class="v">padx</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+        <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Saludar"</span><span class="p">, </span><span class="v">command</span><span class="p">=</span><span class="f">saludar</span><span class="p">).</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">1</span><span class="p">, </span><span class="v">columnspan</span><span class="p">=</span><span class="n">2</span><span class="p">, </span><span class="v">pady</span><span class="p">=</span><span class="n">8</span><span class="p">)</span><br>
+        <span class="v">lbl_resultado</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">""</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"blue"</span><span class="p">)</span><br>
+        <span class="v">lbl_resultado</span><span class="p">.</span><span class="f">grid</span><span class="p">(</span><span class="v">row</span><span class="p">=</span><span class="n">2</span><span class="p">, </span><span class="v">columnspan</span><span class="p">=</span><span class="n">2</span><span class="p">)</span><br>
+        <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+      </div>
+      <!-- PREVIEW -->
+      <div style="min-width:220px">
+        <div style="font-size:10px;font-weight:700;color:#2dd4bf;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Vista previa</div>
+        <div class="app-preview">
+          <div class="app-titlebar">
+            <div class="app-dot dot-red"></div>
+            <div class="app-dot dot-yellow"></div>
+            <div class="app-dot dot-green"></div>
+            <span class="app-title">App Saludo</span>
+          </div>
+          <div class="app-body">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="app-label">Nombre:</div>
+              <div class="app-entry">Ana</div>
+            </div>
+            <div><div class="app-btn">Saludar</div></div>
+            <div class="app-output">¡Hola, Ana!</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px">
+          <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-left:3px solid #2dd4bf;padding:8px 12px;font-size:11.5px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">
+            <strong style="color:#2dd4bf">grid()</strong> organiza Label + Entry en columnas
+          </div>
+          <div style="background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.15);border-left:3px solid var(--blue-light);padding:8px 12px;font-size:11.5px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">
+            <strong style="color:var(--blue-light)">.config()</strong> actualiza el Label sin recrearlo
+          </div>
+          <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:8px 12px;font-size:11.5px;color:var(--muted);line-height:1.5;border-radius:0 2px 2px 0">
+            <strong style="color:var(--green)">if nombre:</strong> valida que el campo no esté vacío
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 8: EJERCICIO PROGRESIVO -->
+  <div class="sec-header"><span class="sec-num">08</span><span class="sec-title">Ejercicio progresivo — saludo_tk</span><span class="sec-line"></span></div>
+  <div class="card a-teal full">
+    <div class="card-desc" style="margin-bottom:20px">Construimos la app en <strong>3 pasos</strong>, añadiendo funcionalidad de a poco. Cada paso agrega un concepto nuevo sobre el anterior:</div>
+
+    <!-- PASO 1 -->
+    <div style="border:1px solid rgba(45,212,191,0.2);border-radius:2px;overflow:hidden;margin-bottom:14px">
+      <div style="background:rgba(45,212,191,0.12);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(45,212,191,0.15)">
+        <span style="background:#2dd4bf;color:#050e1a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;padding:3px 10px;border-radius:2px">PASO 1</span>
+        <span style="font-size:13px;font-weight:700;color:var(--white)">Solo nombre — lo más simple</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">Label + Entry + Button + .get()</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div class="code" style="border-left:none;border-radius:0;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,0.06)">
+          <span class="kw">import</span><span class="p"> tkinter </span><span class="kw">as</span><span class="p"> tk</span><br><br>
+          <span class="v">ventana</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Tk</span><span class="p">()</span><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">title</span><span class="p">(</span><span class="s">"saludo_tk - clase 1"</span><span class="p">)</span><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">geometry</span><span class="p">(</span><span class="s">"900x500"</span><span class="p">)</span><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">configure</span><span class="p">(</span><span class="v">bg</span><span class="p">=</span><span class="s">"#244fa4"</span><span class="p">)</span><br><br>
+          <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Nombre"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">bg</span><span class="p">=</span><span class="s">"#244fa4"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br>
+          <span class="v">entrada_nombre</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Entry</span><span class="p">(</span><span class="v">ventana</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Arial"</span><span class="p">, </span><span class="n">14</span><span class="p">))</span><br>
+          <span class="v">entrada_nombre</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br><br>
+          <span class="kw">def</span> <span class="f">saludar</span><span class="p">():</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre</span><span class="p"> = </span><span class="v">entrada_nombre</span><span class="p">.</span><span class="f">get</span><span class="p">()</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">etiqueta</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><span class="v">text</span><span class="p">=</span><span class="s">"Hola "</span><span class="p"> + </span><span class="v">nombre</span><span class="p">)</span><br><br>
+          <span class="v">etiqueta</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">""</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">bg</span><span class="p">=</span><span class="s">"#244fa4"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Arial"</span><span class="p">, </span><span class="n">16</span><span class="p">))</span><br>
+          <span class="v">etiqueta</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br>
+          <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"saludar"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">command</span><span class="p">=</span><span class="f">saludar</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.01)">
+          <div style="font-size:10px;font-weight:700;color:#2dd4bf;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">¿Qué aprendemos?</div>
+          <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-left:3px solid #2dd4bf;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:#2dd4bf">ventana.configure(bg=)</strong> cambia el color de fondo de toda la ventana
+          </div>
+          <div style="background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.15);border-left:3px solid var(--blue-light);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:var(--blue-light)">fg="white" / bg="#244fa4"</strong> sincroniza el color del Label con el fondo
+          </div>
+          <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:var(--green)">entrada_nombre.get()</strong> lee lo que el usuario escribió en el Entry
+          </div>
+          <div style="background:rgba(244,169,0,0.06);border:1px solid rgba(244,169,0,0.15);border-left:3px solid var(--amber);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:var(--amber)">etiqueta.config(text=)</strong> actualiza el Label sin necesidad de recrearlo
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div style="border:1px solid rgba(74,158,255,0.2);border-radius:2px;overflow:hidden;margin-bottom:14px">
+      <div style="background:rgba(74,158,255,0.1);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(74,158,255,0.15)">
+        <span style="background:var(--blue-light);color:#050e1a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;padding:3px 10px;border-radius:2px">PASO 2</span>
+        <span style="font-size:13px;font-weight:700;color:var(--white)">Añadiendo la edad — dos campos</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">Segundo Entry + concatenación de texto</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div class="code c-blue" style="border-radius:0;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,0.06)">
+          <span class="c"># ... (mismo inicio que paso 1)</span><br><br>
+          <span class="c"># Nuevo: segundo campo</span><br>
+          <span class="v">tk</span><span class="p">.</span><span class="f">Label</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"Edad"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">bg</span><span class="p">=</span><span class="s">"#244fa4"</span><span class="p">, </span><span class="v">fg</span><span class="p">=</span><span class="s">"white"</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br>
+          <span class="v">entrada_edad</span><span class="p"> = </span><span class="v">tk</span><span class="p">.</span><span class="f">Entry</span><span class="p">(</span><span class="v">ventana</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">font</span><span class="p">=(</span><span class="s">"Arial"</span><span class="p">, </span><span class="n">14</span><span class="p">))</span><br>
+          <span class="v">entrada_edad</span><span class="p">.</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br><br>
+          <span class="c"># Función actualizada con edad</span><br>
+          <span class="kw">def</span> <span class="f">saludar</span><span class="p">():</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">nombre</span><span class="p"> = </span><span class="v">entrada_nombre</span><span class="p">.</span><span class="f">get</span><span class="p">()</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">edad</span><span class="p"> = </span><span class="v">entrada_edad</span><span class="p">.</span><span class="f">get</span><span class="p">()</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">etiqueta</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Hola "</span><span class="p"> + </span><span class="v">nombre</span><span class="p"> +</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">" Tu edad es de "</span><span class="p"> + </span><span class="v">edad</span><span class="p"> +</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="s">" años"</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;)</span>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.01)">
+          <div style="font-size:10px;font-weight:700;color:var(--blue-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">¿Qué añadimos?</div>
+          <div style="background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.15);border-left:3px solid var(--blue-light);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            Un segundo <strong style="color:var(--white)">Label + Entry</strong> para capturar la edad con el mismo patrón del nombre
+          </div>
+          <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:var(--green)">entrada_edad.get()</strong> lee el segundo campo — siempre devuelve <strong style="color:var(--white)">str</strong> aunque el usuario escriba números
+          </div>
+          <div style="background:rgba(244,169,0,0.06);border:1px solid rgba(244,169,0,0.15);border-left:3px solid var(--amber);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            La <strong style="color:var(--amber)">concatenación</strong> (<code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f1fa8c">+</code>) une varios strings en uno para construir el mensaje final
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3 -->
+    <div style="border:1px solid rgba(196,132,252,0.2);border-radius:2px;overflow:hidden">
+      <div style="background:rgba(196,132,252,0.1);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(196,132,252,0.15)">
+        <span style="background:#c084fc;color:#050e1a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;padding:3px 10px;border-radius:2px">PASO 3</span>
+        <span style="font-size:13px;font-weight:700;color:var(--white)">Añadiendo el contador — variable global</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">global + segundo botón independiente</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div class="code c-purple" style="border-radius:0;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,0.06)">
+          <span class="c"># ... (mismo inicio que pasos 1 y 2)</span><br><br>
+          <span class="c"># Variable global para el contador</span><br>
+          <span class="v">contador</span><span class="p"> = </span><span class="n">0</span><br><br>
+          <span class="kw">def</span> <span class="f">contar</span><span class="p">():</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">global</span><span class="p"> </span><span class="v">contador</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">contador</span><span class="p"> += </span><span class="n">1</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">etiqueta</span><span class="p">.</span><span class="f">config</span><span class="p">(</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">text</span><span class="p">=</span><span class="s">"Clicks: "</span><span class="p"> + </span><span class="f">str</span><span class="p">(</span><span class="v">contador</span><span class="p">)</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;)</span><br><br>
+          <span class="c"># Botón saludar (ya existía)</span><br>
+          <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"saludar"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">command</span><span class="p">=</span><span class="f">saludar</span><span class="p">).</span><span class="f">pack</span><span class="p">()</span><br><br>
+          <span class="c"># Nuevo: botón contar</span><br>
+          <span class="v">tk</span><span class="p">.</span><span class="f">Button</span><span class="p">(</span><span class="v">ventana</span><span class="p">, </span><span class="v">text</span><span class="p">=</span><span class="s">"contar"</span><span class="p">,</span><br>
+          <span class="p">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="v">command</span><span class="p">=</span><span class="f">contar</span><span class="p">).</span><span class="f">pack</span><span class="p">(</span><span class="v">pady</span><span class="p">=</span><span class="n">10</span><span class="p">)</span><br><br>
+          <span class="v">ventana</span><span class="p">.</span><span class="f">mainloop</span><span class="p">()</span>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,0.01)">
+          <div style="font-size:10px;font-weight:700;color:#c084fc;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">¿Qué añadimos?</div>
+          <div style="background:rgba(196,132,252,0.06);border:1px solid rgba(196,132,252,0.15);border-left:3px solid #c084fc;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:#c084fc">contador = 0</strong> fuera de la función guarda el estado entre llamadas — es una variable que <strong style="color:var(--white)">persiste</strong>
+          </div>
+          <div style="background:rgba(255,121,198,0.06);border:1px solid rgba(255,121,198,0.15);border-left:3px solid #ff79c6;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:#ff79c6">global contador</strong> le dice a Python que use la variable externa, no una nueva local con el mismo nombre
+          </div>
+          <div style="background:rgba(0,193,122,0.06);border:1px solid rgba(0,193,122,0.15);border-left:3px solid var(--green);padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            <strong style="color:var(--green)">str(contador)</strong> convierte el número a texto para poder concatenarlo con el string <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f1fa8c">"Clicks: "</code>
+          </div>
+          <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.15);border-left:3px solid #2dd4bf;padding:9px 13px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+            Los <strong style="color:#2dd4bf">dos botones comparten la misma etiqueta</strong> — cada uno la actualiza con su propio mensaje al hacer clic
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 9: TIPS -->
+  <div class="sec-header"><span class="sec-num">09</span><span class="sec-title">Tips y Buenas Prácticas</span><span class="sec-line"></span></div>
+  <div class="tips-grid">
+    <div class="tip">
+      <div class="tip-t">No mezclar gestores</div>
+      <div class="tip-d">Nunca uses <code>pack()</code> y <code>grid()</code> en el mismo contenedor. Causa errores de geometría difíciles de depurar.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">mainloop() siempre al final</div>
+      <div class="tip-d">Coloca <code>ventana.mainloop()</code> como la <strong>última línea</strong>. Todo el código después de esta línea no se ejecuta hasta que la ventana se cierre.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">command sin paréntesis</div>
+      <div class="tip-d">Escribe <code>command=mi_funcion</code>, no <code>command=mi_funcion()</code>. Con paréntesis la ejecutas inmediatamente en vez de asignarla.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">padx y pady para respirar</div>
+      <div class="tip-d">Usa <code>padx=10, pady=5</code> en tus widgets para añadir espacio interno y que la UI no se vea apretada.</div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="resumen">
+    <div class="res-label">Resumen</div>
+    <div class="res-grid">
+      <div class="ri"><span class="ri-dot"></span>Tkinter está incluido en Python — no requiere instalación adicional</div>
+      <div class="ri"><span class="ri-dot"></span>Toda app: crear Tk() → agregar widgets → mainloop()</div>
+      <div class="ri"><span class="ri-dot"></span>Label muestra texto · Entry captura texto · Button ejecuta acciones</div>
+      <div class="ri"><span class="ri-dot"></span>command=funcion asigna el evento de clic — sin paréntesis</div>
+      <div class="ri"><span class="ri-dot"></span>pack() apila · grid() tabla · place() coordenadas exactas</div>
+      <div class="ri"><span class="ri-dot"></span>.get() lee Entry · .config() actualiza widgets en tiempo real</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left"><b>TAVIID</b> LABS · Programación Python · Módulo 06</div>
+  <div class="footer-right">&lt;/&gt; Dev: Deyvid Torrez</div>
+</div>
+
+</body>
+</html>
