@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Módulo Final — Manim: Animando tu código · TAVIID</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#050e1a;--navy2:#0a1a2e;--navy3:#0f2444;--blue:#1a73e8;--blue-light:#4a9eff;--cyan:#00c9b8;--amber:#f4a900;--green:#00c17a;--red:#e03030;--purple:#8b5cf6;--white:#f0f6ff;--muted:#7a9ab8;--border:rgba(255,255,255,0.07);--code-bg:#0a1220;--mn:#34d399;--mn-light:#6ee7b7}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden}
+
+.topbar{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.taviid-brand{display:flex;align-items:center;gap:10px}
+.taviid-pill{background:#cc0000;color:#fff;font-size:13px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;clip-path:polygon(0 0,100% 0,96% 100%,0 100%)}
+.taviid-ing{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
+.dev-label{font-size:12px;color:var(--muted)}
+.dev-label span{color:var(--amber);font-weight:700}
+
+.mod-banner{background:linear-gradient(135deg,#0f766e 0%,var(--navy3) 60%);padding:32px 40px;display:flex;align-items:center;gap:24px;position:relative;overflow:hidden}
+.mod-banner::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.mod-banner::after{content:'';position:absolute;right:80px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.mod-number{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:rgba(255,255,255,0.12);line-height:1;letter-spacing:-4px;user-select:none}
+.mod-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.mod-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.mod-dot{display:inline-block;width:6px;height:6px;background:var(--mn-light);border-radius:50%;margin-right:8px;vertical-align:middle}
+
+.hero{padding:48px 40px 32px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(52,211,153,0.15) 0%,transparent 70%)}
+.hero-title{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1.1;margin-bottom:12px}
+.hero-title .mn{color:var(--mn-light)}
+.hero-title .cy{color:var(--cyan)}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:500;max-width:580px;margin:0 auto 20px}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-pill{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:5px 14px;border-radius:2px;border:1px solid;background:rgba(52,211,153,0.1);color:var(--mn-light);border-color:rgba(110,231,183,0.3)}
+
+.page{padding:0 40px 60px}
+
+.sec-header{display:flex;align-items:center;gap:12px;margin:40px 0 20px}
+.sec-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--mn-light);letter-spacing:2px;background:rgba(110,231,183,0.1);border:1px solid rgba(110,231,183,0.2);padding:4px 10px;border-radius:2px;text-transform:uppercase}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+.card{background:var(--navy2);border:1px solid var(--border);border-top:2px solid transparent;padding:20px;border-radius:2px;transition:transform .15s}
+.card:hover{transform:translateY(-2px)}
+.card.am{border-top-color:var(--mn-light)}
+.card.ac{border-top-color:var(--cyan)}
+.card.ab{border-top-color:var(--blue-light)}
+.card.aa{border-top-color:var(--amber)}
+.card.ap{border-top-color:var(--purple)}
+
+.card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tag{font-size:9px;font-weight:700;padding:3px 9px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.tm{background:rgba(110,231,183,0.15);color:var(--mn-light);border:1px solid rgba(110,231,183,0.3)}
+.tc{background:rgba(0,201,184,0.15);color:var(--cyan);border:1px solid rgba(0,201,184,0.3)}
+.tb{background:rgba(74,158,255,0.15);color:var(--blue-light);border:1px solid rgba(74,158,255,0.3)}
+.ta{background:rgba(244,169,0,0.15);color:var(--amber);border:1px solid rgba(244,169,0,0.3)}
+.tp{background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.3)}
+
+.card-title{font-size:14px;font-weight:700;color:var(--white)}
+.card-desc{font-size:12.5px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.card-desc strong{color:var(--white);font-weight:600}
+
+.code{background:var(--code-bg);border:1px solid rgba(255,255,255,0.06);border-left:3px solid var(--mn-light);padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;border-radius:0 2px 2px 0;overflow-x:auto}
+.code.lc{border-left-color:var(--cyan)}
+.code.lb{border-left-color:var(--blue-light)}
+.code.la{border-left-color:var(--amber)}
+.code.lp{border-left-color:var(--purple)}
+.kw{color:#ff79c6}.s{color:#f1fa8c}.n{color:#bd93f9}.c{color:#3d5a73;font-style:italic}.v{color:#8be9fd}.f{color:#50fa7b}.p{color:#f8f8f2}.cl{color:#6ee7b7}
+
+/* TABLA COMPARATIVA */
+.comp-table{width:100%;border-collapse:collapse;font-size:12px}
+.comp-table th{padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+.comp-table th:first-child{border-radius:2px 0 0 0}
+.comp-table th:last-child{border-radius:0 2px 0 0}
+.comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);font-weight:500;vertical-align:top;line-height:1.55}
+.comp-table tr:hover td{background:rgba(255,255,255,0.02);color:var(--white)}
+.comp-table tr:last-child td{border-bottom:none}
+.lc-code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(110,231,183,0.12);color:var(--mn-light);padding:2px 7px;border-radius:2px;display:inline-block;margin:1px}
+
+/* FLUJO DE PASOS */
+.flow-step{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.flow-step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;background:rgba(110,231,183,0.15);border:1px solid rgba(110,231,183,0.3);color:var(--mn-light);font-family:'Syne',sans-serif;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:2px}
+.step-content{flex:1}
+.step-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.step-desc code{font-family:'JetBrains Mono',monospace;background:rgba(110,231,183,0.1);color:var(--mn-light);padding:1px 5px;border-radius:2px;font-size:11px}
+
+/* ANATOMÍA DE LA CLASE */
+.anatomy{background:var(--code-bg);border:1px solid var(--border);border-radius:2px;padding:18px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2.1}
+.anatomy-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:2px}
+.anatomy-row .at{flex-shrink:0;font-weight:700;padding:1px 8px;border-radius:2px;font-size:10px;text-transform:uppercase;letter-spacing:1px;min-width:64px;text-align:center}
+.anatomy-row .ad{font-size:11.5px;color:var(--muted);padding-top:1px}
+.at-class{background:rgba(255,121,198,0.15);color:#ff79c6}
+.at-init{background:rgba(110,231,183,0.15);color:var(--mn-light)}
+.at-self{background:rgba(139,92,246,0.15);color:#a78bfa}
+.at-met{background:rgba(74,158,255,0.15);color:var(--blue-light)}
+
+/* TIPS */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tip{background:var(--navy2);border:1px solid var(--border);border-left:3px solid var(--mn);padding:14px 16px;border-radius:0 2px 2px 0;transition:border-color .2s}
+.tip:hover{border-left-color:var(--cyan)}
+.tip-t{font-size:10px;font-weight:700;color:var(--mn-light);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.tip-d{font-size:12px;color:var(--muted);line-height:1.6}
+.tip-d code{font-family:'JetBrains Mono',monospace;background:rgba(110,231,183,0.1);color:var(--mn-light);padding:1px 6px;border-radius:2px;font-size:11px}
+
+/* CIERRE / CTA SIGUIENTE MÓDULO */
+.next-banner{margin-top:40px;background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(0,201,184,0.06));border:1px solid rgba(110,231,183,0.25);border-radius:2px;padding:26px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.next-label{font-size:10px;font-weight:700;color:var(--mn-light);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.next-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white)}
+.next-desc{font-size:12.5px;color:var(--muted);margin-top:4px;max-width:480px}
+.next-arrow{font-family:'Syne',sans-serif;font-size:26px;color:var(--mn-light);flex-shrink:0}
+
+/* RESUMEN */
+.resumen{margin-top:40px;background:var(--navy2);border:1px solid var(--border);border-top:2px solid var(--mn-light);border-radius:2px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.res-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--mn-light);letter-spacing:3px;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);border-right:1px solid rgba(110,231,183,0.2);padding-right:16px}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ri{font-size:12.5px;color:var(--muted);font-weight:500;display:flex;align-items:flex-start;gap:8px;line-height:1.55;padding:8px 10px;background:rgba(255,255,255,0.02);border-radius:2px}
+.ri-dot{width:5px;height:5px;background:var(--mn-light);border-radius:50%;flex-shrink:0;margin-top:6px}
+
+.footer{background:var(--navy2);border-top:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;margin-top:48px}
+.footer-left{font-size:11px;color:var(--muted)}
+.footer-left b{color:#cc0000}
+.footer-right{font-size:11px;color:var(--muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero{animation:fadeUp .5s ease both}
+
+/* ✅ NUEVO — Responsive: celular (≤640px) */
+@media (max-width:640px){
+  /* Paddings laterales grandes que causaban desborde horizontal en celular */
+  .topbar{padding:0 16px}
+  .mod-banner{padding:24px 16px;gap:14px}
+  .hero{padding:32px 16px 24px}
+  .page{padding:0 16px 40px}
+  .footer{padding:14px 16px;flex-direction:column;gap:6px;text-align:center}
+
+  /* Número gigante del banner y títulos: bajamos tamaño para que no empujen el layout */
+  .mod-number{font-size:48px}
+  .mod-title{font-size:16px}
+  .hero-title{font-size:26px}
+  .hero-sub{font-size:13.5px}
+  .hero-pills{gap:6px}
+  .hero-pill{font-size:10.5px;padding:4px 9px}
+
+  /* Todas las grillas de 2 y 3 columnas pasan a 1 columna */
+  .grid2,.grid3,.tips-grid{grid-template-columns:1fr!important}
+
+  /* Las tablas comparativas no tienen contenedor con scroll propio: se lo agregamos */
+  .comp-table{display:block;overflow-x:auto;white-space:nowrap}
+  .comp-table thead,.comp-table tbody,.comp-table tr{display:table;width:100%;table-layout:fixed}
+
+  /* Anatomía de la clase: las etiquetas (class/init/self/método) tenían min-width fijo,
+     en columna angosta se ven mejor arriba del texto en vez de al lado */
+  .anatomy-row{flex-direction:column;gap:4px;margin-bottom:10px}
+  .anatomy-row .at{min-width:0;width:fit-content}
+
+  /* Banner "siguiente módulo": apilar en vertical para que la flecha no quede apretada */
+  .next-banner{flex-direction:column;align-items:flex-start;padding:20px 16px}
+  .next-arrow{display:none}
+
+  /* Bloques de código: reducir un poco para que entren más caracteres antes de hacer scroll */
+  .code,.anatomy{font-size:11px;padding:12px 14px}
+
+  /* El bloque "Resumen" usaba writing-mode vertical, que no cabe en celular */
+  .resumen{grid-template-columns:1fr;padding:20px 16px;gap:14px}
+  .res-label{writing-mode:horizontal-tb;transform:none;border-right:none;border-bottom:1px solid rgba(110,231,183,0.2);padding-right:0;padding-bottom:10px;text-align:left}
+  .res-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="taviid-brand">
+    <div class="taviid-pill">TAVIID</div>
+    <div class="taviid-ing">Labs</div>
+  </div>
+  <div class="dev-label">&lt;/&gt; Dev: <span>Deyvid Torrez</span></div>
+</div>
+
+<div class="mod-banner">
+  <div class="mod-number">10</div>
+  <div>
+    <div class="mod-eyebrow">Python desde cero · Módulo de cierre</div>
+    <div class="mod-title"><span class="mod-dot"></span>Manim — Animando lo que aprendiste</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title"><span class="mn">Manim</span> <span class="cy">Animaciones con código</span></div>
+  <div class="hero-sub">Cerramos el curso con algo distinto: usar todo lo que aprendiste (clases, objetos, métodos) para crear animaciones matemáticas y visuales con Python. Manim es la librería que usa 3Blue1Brown para sus videos — ahora la vas a usar tú</div>
+  <div class="hero-pills">
+    <span class="hero-pill">manim</span>
+    <span class="hero-pill">Scene</span>
+    <span class="hero-pill">class</span>
+    <span class="hero-pill">construct()</span>
+    <span class="hero-pill">self.play()</span>
+    <span class="hero-pill">Transform</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- SECCIÓN 1: QUÉ ES MANIM -->
+  <div class="sec-header"><span class="sec-num">01</span><span class="sec-title">¿Qué es Manim y para qué sirve?</span><span class="sec-line"></span></div>
+  <div class="grid2">
+    <div class="card am">
+      <div class="card-head"><span class="tag tm">Librería</span><span class="card-title">Manim — Mathematical Animation Engine</span></div>
+      <div class="card-desc"><strong>Manim</strong> es una librería de Python para crear animaciones matemáticas y educativas mediante código. Fue creada por <strong>Grant Sanderson</strong>, el creador del canal de YouTube <strong>3Blue1Brown</strong>, para producir sus videos de matemáticas. Hoy existe una versión mantenida por la comunidad llamada <strong>Manim Community (ManimCE)</strong>, que es la que vamos a usar — más estable, mejor documentada y más fácil de instalar.</div>
+      <div class="code">
+        <span class="c"># Instalación</span><br>
+        <span class="kw">pip</span> install manim
+      </div>
+    </div>
+    <div class="card ac">
+      <div class="card-head"><span class="tag tc">Uso real</span><span class="card-title">¿Dónde se usa Manim?</span></div>
+      <div class="card-desc">No es solo para matemáticas. Se usa para:</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:1.8">
+        <div>📐 <strong style="color:var(--white)">Educación</strong> — explicar conceptos abstractos (física, álgebra, geometría) de forma visual</div>
+        <div>🎥 <strong style="color:var(--white)">Contenido para YouTube/redes</strong> — canales educativos como 3Blue1Brown</div>
+        <div>💻 <strong style="color:var(--white)">Visualizar código</strong> — mostrar cómo cambian estructuras de datos, algoritmos, lógica</div>
+        <div>📊 <strong style="color:var(--white)">Presentaciones técnicas</strong> — animar diagramas en charlas o clases</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: TRY MANIM -->
+  <div class="sec-header"><span class="sec-num">02</span><span class="sec-title">try.manim.community — probarlo sin instalar nada</span><span class="sec-line"></span></div>
+  <div class="card ab full">
+    <div class="card-head"><span class="tag tb">Sandbox online</span><span class="card-title">¿Qué es try.manim.community?</span></div>
+    <div class="card-desc">Es un <strong>cuaderno Jupyter en línea</strong> que corre directo en el navegador, sin que tengas que instalar Python ni Manim en tu computadora. Es la forma más rápida de probar código de Manim antes de animarte a instalarlo localmente — ideal para los primeros experimentos o para mostrarle algo a alguien sin pedirle que instale nada.</div>
+    <div style="background:rgba(74,158,255,0.06);border:1px solid rgba(74,158,255,0.15);border-left:3px solid var(--blue-light);padding:12px 16px;font-size:12.5px;color:var(--muted);line-height:1.7;border-radius:0 2px 2px 0">
+      <strong style="color:var(--white)">Importante:</strong> en try.manim.community la librería <span class="lc-code">from manim import *</span> ya viene ejecutada en una celda inicial del cuaderno. Vos no la volvés a escribir — solo necesitas <strong style="color:var(--white)">otra celda nueva</strong> con tu <span class="lc-code">class</span> y, justo arriba de ella, la línea mágica <span class="lc-code">%%manim</span> que le dice al cuaderno "esto es Manim, renderízalo". Si después instalas Manim en tu propia computadora (con <span class="lc-code">pip install manim</span>), ahí sí necesitas escribir el <span class="lc-code">from manim import *</span> al principio de tu archivo .py — try.manim.community es la única excepción porque ya te lo deja puesto.
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: CLASES Y POO -->
+  <div class="sec-header"><span class="sec-num">03</span><span class="sec-title">Antes de animar: ¿qué es una clase?</span><span class="sec-line"></span></div>
+  <div class="card ap full">
+    <div class="card-head"><span class="tag tp">POO</span><span class="card-title">Programación Orientada a Objetos (POO)</span></div>
+    <div class="card-desc">Hasta ahora programaste con <strong>funciones</strong>: bloques de código que reciben datos y devuelven un resultado. Una <strong>clase</strong> es distinto: es un <strong>molde</strong> para crear objetos que tienen tanto <strong>datos</strong> (atributos) como <strong>comportamientos</strong> (métodos) juntos en un solo paquete. Manim está construido sobre clases — por eso toda animación empieza heredando de <span class="lc-code">Scene</span>.</div>
+    <div class="anatomy">
+      <div class="anatomy-row"><span class="at at-class">class</span><span class="ad">Define una clase nueva. <span style="color:var(--white)">MiPrimeraAnimacion(Scene)</span> significa "esta clase hereda todo el comportamiento de Scene" — ya viene con play(), wait(), add(), etc.</span></div>
+      <div class="anatomy-row"><span class="at at-init">construct</span><span class="ad">Es el método que Manim ejecuta automáticamente para renderizar la escena. Todo lo que pasa en pantalla se escribe adentro de este método.</span></div>
+      <div class="anatomy-row"><span class="at at-self">self</span><span class="ad">Hace referencia "a esta misma escena". <span style="color:var(--white)">self.play(...)</span> significa "reproduce esta animación en MI escena".</span></div>
+      <div class="anatomy-row"><span class="at at-met">método</span><span class="ad">Es una función que vive dentro de una clase. <span style="color:var(--white)">play()</span> y <span style="color:var(--white)">wait()</span> son métodos heredados de Scene, listos para usar.</span></div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: CÓDIGO COMENTADO -->
+  <div class="sec-header"><span class="sec-num">04</span><span class="sec-title">Tu primera animación, línea por línea</span><span class="sec-line"></span></div>
+  <div class="card am full">
+    <div class="card-head"><span class="tag tm">En try.manim.community</span><span class="card-title">Celda nueva — la librería ya está importada</span></div>
+    <div class="code">
+      <span class="c">%%manim -qm -v WARNING MiPrimeraAnimacion</span><br><br>
+      <span class="kw">class</span> <span class="cl">MiPrimeraAnimacion</span>(<span class="cl">Scene</span>):<br>
+      &nbsp;&nbsp;<span class="kw">def</span> <span class="f">construct</span>(<span class="v">self</span>):<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">texto</span> = <span class="cl">Text</span>(<span class="s">"Felicidades por terminar el curso"</span>, <span class="v">font_size</span>=<span class="n">36</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">cuadrado</span> = <span class="cl">Square</span>(<span class="v">color</span>=<span class="v">BLUE</span>, <span class="v">fill_opacity</span>=<span class="n">0.5</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">circulo</span> = <span class="cl">Circle</span>(<span class="v">color</span>=<span class="v">RED</span>, <span class="v">fill_opacity</span>=<span class="n">0.8</span>)<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">texto</span>.<span class="f">to_edge</span>(<span class="v">UP</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">cuadrado</span>.<span class="f">shift</span>(<span class="v">LEFT</span> * <span class="n">2</span>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">circulo</span>.<span class="f">shift</span>(<span class="v">RIGHT</span> * <span class="n">2</span>)<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">play</span>(<span class="cl">Write</span>(<span class="v">texto</span>))<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">wait</span>(<span class="n">5</span>)<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">play</span>(<span class="cl">Create</span>(<span class="v">cuadrado</span>))<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">wait</span>(<span class="n">5</span>)<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">play</span>(<span class="cl">Create</span>(<span class="v">circulo</span>))<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">wait</span>(<span class="n">5</span>)<br><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">play</span>(<span class="cl">Transform</span>(<span class="v">cuadrado</span>, <span class="v">circulo</span>))<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="v">self</span>.<span class="f">wait</span>(<span class="n">5</span>)
+    </div>
+    <div style="margin-top:14px;background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.15);border-left:3px solid var(--mn-light);padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;border-radius:0 2px 2px 0">
+      <strong style="color:var(--white)">%%manim -qm -v WARNING MiPrimeraAnimacion</strong> es la línea mágica de Jupyter que renderiza la escena. <span class="lc-code">-qm</span> pide calidad media y <span class="lc-code">-v WARNING</span> reduce los mensajes de la consola, mostrando solo advertencias importantes.
+    </div>
+  </div>
+  <div class="card ab full" style="margin-top:14px">
+    <div class="card-head"><span class="tag tb">En tu computadora (.py)</span><span class="card-title">mi_animacion.py — necesita el import</span></div>
+    <div class="card-desc">Si guardas este mismo código en un archivo de tu computadora, ahí sí tenés que agregar la línea de importación al principio, porque tu archivo no tiene ninguna celda previa que ya la haya cargado:</div>
+    <div class="code lb">
+      <span class="kw">from</span> manim <span class="kw">import</span> *<br><br>
+      <span class="kw">class</span> <span class="cl">MiPrimeraAnimacion</span>(<span class="cl">Scene</span>):<br>
+      &nbsp;&nbsp;<span class="c">... (el resto del código es igual)</span>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5: QUÉ HACE CADA PARTE -->
+  <div class="sec-header"><span class="sec-num">05</span><span class="sec-title">Desglose: qué hace cada bloque</span><span class="sec-line"></span></div>
+  <div class="card ac full">
+    <div class="card-head"><span class="tag tc">Flujo de la escena</span><span class="card-title">El orden en que ocurre todo</span></div>
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-content"><div class="step-title">Se crean los objetos</div><div class="step-desc"><code>Text()</code>, <code>Square()</code> y <code>Circle()</code> son <strong style="color:var(--white)">objetos</strong> — instancias de clases que ya vienen dentro de Manim. Cada uno guarda sus propios datos: color, tamaño, posición.</div></div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-content"><div class="step-title">Se posicionan antes de mostrarse</div><div class="step-desc"><code>to_edge(UP)</code> manda el texto arriba. <code>shift(LEFT * 2)</code> y <code>shift(RIGHT * 2)</code> separan el cuadrado y el círculo para que no queden encimados.</div></div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-content"><div class="step-title">self.play() dispara la animación</div><div class="step-desc"><code>Write()</code> dibuja el texto como si se escribiera a mano. <code>Create()</code> dibuja la figura trazando su contorno. Sin <code>play()</code>, el objeto existiría pero nunca aparecería en pantalla.</div></div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-content"><div class="step-title">self.wait() pausa la escena</div><div class="step-desc">Sin esto, Manim pasaría a la siguiente animación de inmediato. <code>wait(5)</code> deja la imagen 5 segundos en pantalla para que se pueda apreciar.</div></div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-content"><div class="step-title">Transform() morfa un objeto en otro</div><div class="step-desc"><code>Transform(cuadrado, circulo)</code> anima la transición del cuadrado hasta convertirse visualmente en el círculo — una de las animaciones más icónicas de Manim.</div></div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6: CÓMO EJECUTAR -->
+  <div class="sec-header"><span class="sec-num">06</span><span class="sec-title">Cómo ejecutar tu animación</span><span class="sec-line"></span></div>
+  <div class="grid2">
+    <div class="card ab">
+      <div class="card-head"><span class="tag tb">Online</span><span class="card-title">Opción 1 — try.manim.community</span></div>
+      <div class="card-desc">Escribís tu <span class="lc-code">class</span> en una celda nueva, le ponés arriba la línea mágica <span class="lc-code">%%manim -qm -v WARNING MiPrimeraAnimacion</span> y ejecutás la celda. No hace falta repetir el <span class="lc-code">from manim import *</span> — ya está cargado.</div>
+    </div>
+    <div class="card aa">
+      <div class="card-head"><span class="tag ta">Terminal</span><span class="card-title">Opción 2 — en tu computadora</span></div>
+      <div class="card-desc">Guardás el código (con su <span class="lc-code">from manim import *</span>) en un archivo, por ejemplo <span class="lc-code">mi_animacion.py</span>, y desde la consola — no presionas "Play" como en otros programas — ejecutás:</div>
+      <div class="code la">
+        manim -pql mi_animacion.py MiPrimeraAnimacion
+      </div>
+    </div>
+  </div>
+  <table class="comp-table" style="margin-top:14px">
+    <thead style="background:rgba(244,169,0,0.15)">
+      <tr>
+        <th style="color:var(--amber)">Parte del comando</th>
+        <th style="color:var(--amber)">Qué significa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="lc-code">manim</span></td><td>El programa que renderiza la animación</td></tr>
+      <tr><td><span class="lc-code">-p</span></td><td>Preview — abre el video automáticamente al terminar de renderizar</td></tr>
+      <tr><td><span class="lc-code">-ql</span></td><td>Quality low — renderiza rápido en baja calidad (bueno para probar)</td></tr>
+      <tr><td><span class="lc-code">mi_animacion.py</span></td><td>El archivo donde guardaste la clase</td></tr>
+      <tr><td><span class="lc-code">MiPrimeraAnimacion</span></td><td>El nombre exacto de la clase que querés renderizar — debe coincidir con el <span class="lc-code">class</span> del código</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card ap full" style="margin-top:14px">
+    <div class="card-head"><span class="tag tp">Más flags</span><span class="card-title">No solo -ql: las 5 calidades de renderizado</span></div>
+    <div class="card-desc">El flag de calidad siempre empieza con <span class="lc-code">-q</span> seguido de una letra. Mientras más alta la calidad, más tarda en renderizar:</div>
+    <table class="comp-table">
+      <thead style="background:rgba(139,92,246,0.15)">
+        <tr>
+          <th style="color:#a78bfa">Flag</th>
+          <th style="color:#a78bfa">Calidad</th>
+          <th style="color:#a78bfa">Resolución</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="lc-code">-ql</span></td><td>Baja (Low)</td><td>480p · 15 fps</td></tr>
+        <tr><td><span class="lc-code">-qm</span></td><td>Media (Medium)</td><td>720p · 30 fps</td></tr>
+        <tr><td><span class="lc-code">-qh</span></td><td>Alta (High)</td><td>1080p · 60 fps</td></tr>
+        <tr><td><span class="lc-code">-qp</span></td><td>2K</td><td>1440p · 60 fps</td></tr>
+        <tr><td><span class="lc-code">-qk</span></td><td>4K</td><td>2160p · 60 fps</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-left:3px solid #a78bfa;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.7;border-radius:0 2px 2px 0">
+      Hay más flags además de calidad y preview: <span class="lc-code">-f</span> abre la carpeta donde quedó el video en vez de reproducirlo · <span class="lc-code">-i</span> exporta como <span class="lc-code">.gif</span> en vez de <span class="lc-code">.mp4</span> · <span class="lc-code">-v WARNING</span> reduce los mensajes que muestra la consola mientras renderiza. Para ver la lista completa de opciones, ejecutá <span class="lc-code">manim -h</span> en tu terminal.
+    </div>
+  </div>
+
+  <!-- SECCIÓN 7: TIPS -->
+  <div class="sec-header"><span class="sec-num">07</span><span class="sec-title">Tips para tus primeras animaciones</span><span class="sec-line"></span></div>
+  <div class="tips-grid">
+    <div class="tip">
+      <div class="tip-t">El nombre de la clase importa</div>
+      <div class="tip-d">El comando de consola debe usar <code>exactamente</code> el mismo nombre que pusiste después de <code>class</code>. Si no coinciden, Manim no encuentra qué renderizar.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">wait() no es opcional para ver algo</div>
+      <div class="tip-d">Si encadenás varios <code>play()</code> sin <code>wait()</code>, las animaciones pasan tan rápido que parecen no haber ocurrido. Usalo generosamente al principio.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">Empezá en baja calidad</div>
+      <div class="tip-d">Usa siempre <code>-ql</code> mientras estás probando y ajustando. Subí a <code>-qh</code> (alta calidad) solo en la versión final — renderizar en alta calidad es mucho más lento.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-t">Cada objeto puede transformarse en otro</div>
+      <div class="tip-d"><code>Transform()</code> funciona entre casi cualquier par de objetos (texto, formas, gráficos) — es la base de gran parte de la magia visual de Manim.</div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="resumen">
+    <div class="res-label">Resumen</div>
+    <div class="res-grid">
+      <div class="ri"><span class="ri-dot"></span>Manim es una librería de Python para animaciones matemáticas y educativas, creada por Grant Sanderson (3Blue1Brown)</div>
+      <div class="ri"><span class="ri-dot"></span>try.manim.community permite probarlo sin instalar nada, directo en el navegador</div>
+      <div class="ri"><span class="ri-dot"></span>Una clase es un molde que junta datos y comportamientos — toda escena hereda de Scene</div>
+      <div class="ri"><span class="ri-dot"></span>construct() es el método que Manim ejecuta para dibujar la escena</div>
+      <div class="ri"><span class="ri-dot"></span>self.play() dispara animaciones · self.wait() las pausa en pantalla</div>
+      <div class="ri"><span class="ri-dot"></span>manim -pql archivo.py NombreClase ejecuta la animación desde la terminal</div>
+    </div>
+  </div>
+
+  <!-- BANNER DE CIERRE -->
+  <div class="next-banner">
+    <div>
+      <div class="next-label">Curso completado</div>
+      <div class="next-title">Llegaste al final — ¡felicidades!</div>
+      <div class="next-desc">Desde variables hasta bases de datos, pasando por interfaces gráficas y proyectos completos. Ahora tenés las bases para seguir explorando Python por tu cuenta, incluyendo herramientas creativas como Manim.</div>
+    </div>
+    <div class="next-arrow">🎉</div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left"><b>TAVIID</b> LABS · Programación Python · Módulo de cierre</div>
+  <div class="footer-right">&lt;/&gt; Dev: Deyvid Torrez</div>
+</div>
+
+</body>
+</html>
